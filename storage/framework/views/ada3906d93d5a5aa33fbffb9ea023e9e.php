@@ -1,18 +1,18 @@
 <?php $__env->startSection('content'); ?>
 
-<div class="min-h-screen flex flex-col items-center justify-center pt-16 pb-12
+<div class="min-h-screen flex items-center justify-center py-16 px-4
             bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100
             dark:from-night dark:via-marine/20 dark:to-night">
 
-    
-    <div class="w-full max-w-sm px-4">
-        <div class="bg-white dark:bg-marine/40
-                    rounded-2xl shadow-xl
-                    border border-slate-200/60 dark:border-white/10
-                    p-8">
+    <div class="w-full max-w-md mx-auto">
+        <div class="overflow-hidden rounded-[2rem] bg-white/95 dark:bg-marine-900/80
+                    border border-slate-200/70 dark:border-white/10
+                    shadow-[0_30px_80px_-40px_rgba(15,23,42,.35)]
+                    ring-1 ring-slate-200/70 dark:ring-white/10
+                    p-8 sm:p-10">
 
             
-            <div class="flex flex-col items-center mb-7">
+            <div class="flex flex-col items-center text-center space-y-2 mb-8">
                 <div class="flex items-center justify-center w-11 h-11 rounded-full bg-blue-50 dark:bg-astra/10 mb-3">
                     <svg class="w-5 h-5 text-blue-600 dark:text-astra" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -62,17 +62,16 @@
                             required
                             autocomplete="email"
                             placeholder="vous@exemple.ch"
-                            class="block w-full rounded-lg border py-2.5 pl-10 pr-4 text-sm
-                                   border-gray-300 bg-white text-slate-900 placeholder-gray-400
+                            class="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm font-medium
+                                   text-slate-900 placeholder:text-slate-400
                                    dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder-slate-500
-                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                   dark:focus:ring-astra dark:focus:border-astra
-                                   transition-colors duration-150
+                                   focus:border-astra focus:outline-none focus:ring-2 focus:ring-astra/20
+                                   transition duration-150
                                    <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> border-red-400 focus:ring-red-400 focus:border-red-400 <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?> border-red-400 focus:ring-red-400/20 focus:border-red-400 <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
@@ -109,12 +108,11 @@ unset($__errorArgs, $__bag); ?>
                             required
                             autocomplete="current-password"
                             placeholder="••••••••"
-                            class="block w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm
-                                   border-gray-300 bg-white text-slate-900 placeholder-gray-400
+                            class="block w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-10 text-sm font-medium
+                                   text-slate-900 placeholder:text-slate-400
                                    dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder-slate-500
-                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                   dark:focus:ring-astra dark:focus:border-astra
-                                   transition-colors duration-150"
+                                   focus:border-astra focus:outline-none focus:ring-2 focus:ring-astra/20
+                                   transition duration-150"
                         >
                         <button
                             type="button"
@@ -135,34 +133,24 @@ unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
-                
                 <div class="flex items-center mb-6">
-                    <input
-                        id="remember"
-                        type="checkbox"
-                        name="remember"
-                        class="h-4 w-4 rounded border-gray-300 text-blue-600
-                               focus:ring-2 focus:ring-blue-500
-                               dark:border-white/20 dark:bg-white/5"
-                    >
-                    <label for="remember" class="ml-2 text-sm text-slate-600 dark:text-slate-400 cursor-pointer select-none">
-                        <?php echo e(__('app.nav.remember_me')); ?>
-
+                    <label class="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                        <input
+                            id="remember"
+                            type="checkbox"
+                            name="remember"
+                            class="h-4 w-4 rounded border-slate-300 text-astra focus:ring-astra/50 dark:border-white/20 dark:bg-white/5"
+                        >
+                        <span><?php echo e(__('app.nav.remember_me')); ?></span>
                     </label>
                 </div>
 
                 
                 <button
                     type="submit"
-                    class="flex w-full items-center justify-center
-                           rounded-lg py-2.5 px-4
-                           bg-blue-600 hover:bg-blue-700 active:bg-blue-800
-                           dark:bg-astra dark:hover:bg-blue-600
-                           text-white text-sm font-semibold
-                           shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/30
-                           transition-all duration-200
-                           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-                           dark:focus:ring-offset-marine"
+                    class="inline-flex w-full items-center justify-center rounded-2xl bg-astra px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-astra/20
+                           hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-astra/30 focus:ring-offset-2
+                           transition duration-200"
                 >
                     <?php echo e(__('app.nav.login')); ?>
 
