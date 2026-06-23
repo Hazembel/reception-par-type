@@ -67,10 +67,9 @@ class PayPalWebhookController extends Controller
      */
     private function handleCaptureCompleted(array $payload, Request $request): void
     {
-        $resource  = $payload['resource'] ?? [];
-        $orderId   = $payload['resource']['supplementary_data']['related_ids']['order_id']
-            ?? $resource['id']
-            ?? null;
+        $resource      = $payload['resource'] ?? [];
+        $supplementary = $resource['supplementary_data'] ?? [];
+        $orderId       = $supplementary['related_ids']['order_id'] ?? $resource['id'] ?? null;
 
         if (!$orderId) {
             Log::warning('PayPal webhook: order_id manquant');
@@ -132,9 +131,8 @@ class PayPalWebhookController extends Controller
         }
 
         // Récupération de l'utilisateur depuis le payeur PayPal
-        $payerEmail = $resource['payer']['email_address']
-            ?? $resource['payer']['payer_info']['email']
-            ?? null;
+        $payer      = $resource['payer'] ?? [];
+        $payerEmail = $payer['email_address'] ?? ($payer['payer_info']['email'] ?? null);
         $buyer      = $payerEmail
             ? \App\Models\User::where('email', $payerEmail)->first()
             : null;
@@ -182,8 +180,15 @@ class PayPalWebhookController extends Controller
      */
     private function verifySignature(Request $request): bool
     {
-        // En développement : skip la vérification (PayPal Sandbox n'a pas de vraie sig)
-        if (app()->isLocal() || app()->environment('testing')) {
+        // Tests : skip systématiquement (pas de vraie signature dans le runner).
+        if (app()->environment('testing')) {
+            return true;
+        }
+
+        // Développement local : skip UNIQUEMENT si la requête vient de loopback.
+        // Protège contre un APP_ENV=local accidentellement déployé sur un serveur public.
+        if (app()->isLocal() && in_array($request->ip(), ['127.0.0.1', '::1'], true)) {
+            Log::warning('[DEV] PayPal signature verification skipped — loopback uniquement');
             return true;
         }
 

@@ -41,9 +41,11 @@ class Affiliate extends Model
 
     /** Commission en attente (non encore payée) en centimes */
     public function getPendingEarningsCtSAttribute(): int {
-        return $this->earnings()
-            ->whereIn('status', ['pending', 'approved'])
-            ->sum('commission_cts');
+        // Utilise la relation pré-chargée si disponible (évite N+1 dans les listings admin).
+        if ($this->relationLoaded('earnings')) {
+            return $this->earnings->whereIn('status', ['pending', 'approved'])->sum('commission_cts');
+        }
+        return $this->earnings()->whereIn('status', ['pending', 'approved'])->sum('commission_cts');
     }
 
     /** Le seuil de paiement est-il atteint ? */

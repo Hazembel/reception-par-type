@@ -400,19 +400,19 @@ class InstallCommand extends Command
         $this->line("  <fg=cyan>Création du compte administrateur (niveau 8) :</>");
         $this->newLine();
 
-        // En mode non-interactif : utiliser les valeurs .env ou des défauts
+        // En mode non-interactif : lire nom/email depuis .env, générer un mot de passe fort aléatoire
         if ($this->option('force') || $this->option('no-interaction')) {
             $name     = env('ADMIN_NAME', 'Administrateur');
             $email    = env('ADMIN_EMAIL', 'admin@reception-par-type.ch');
-            $password = env('ADMIN_PASSWORD', 'ChangeMe1234!');
+            $password = \Illuminate\Support\Str::password(24);
         } else {
             $name     = $this->ask('    Nom complet', 'Administrateur');
             $email    = $this->ask('    Adresse e-mail', 'admin@reception-par-type.ch');
             $password = $this->secret('    Mot de passe (min. 12 caractères)');
 
             if (!$password || strlen($password) < 12) {
-                $this->line("  " . self::WARN . " <fg=yellow>Mot de passe trop court — utilisation d'un mot de passe temporaire.</>");
-                $password = 'ChangeMe1234!';
+                $this->line("  " . self::WARN . " <fg=yellow>Mot de passe trop court — génération d'un mot de passe sécurisé aléatoire.</>");
+                $password = \Illuminate\Support\Str::password(24);
             }
         }
 

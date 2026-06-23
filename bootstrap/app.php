@@ -51,7 +51,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // ── Trust proxies (load balancer / Cloudflare) ────────────────────────
-        $middleware->trustProxies(at: '*'); // Restreindre aux IPs du proxy en prod
+        // Production : définir TRUSTED_PROXIES dans .env avec les plages IP Cloudflare.
+        $rawProxies = env('TRUSTED_PROXIES', '*');
+        $middleware->trustProxies(
+            at: $rawProxies === '*' ? '*' : array_map('trim', explode(',', $rawProxies))
+        );
 
         // ── API stateful (Sanctum SPA) ────────────────────────────────────────
         $middleware->statefulApi();

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
 use App\Services\CantonalTaxService;
+use App\Services\TgNormalizerService;
 use App\Services\TyreService;
+use App\Services\VehicleFieldFilterService;
 use App\Services\WheelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -83,7 +85,7 @@ class VehicleApiController extends Controller
         $vehicle = Cache::remember($cacheKey, self::CACHE_TTL, function () use ($numero_tg, &$cached) {
             $cached = false;
             return Vehicle::active()
-                ->where('numero_tg', $this->normalizeTg($numero_tg))
+                ->where('numero_tg', TgNormalizerService::normalize($numero_tg))
                 ->first();
         });
 
@@ -95,7 +97,7 @@ class VehicleApiController extends Controller
         }
 
         // ── Filtrage strict des champs ─────────────────────────────────────────
-        $data = $this->filterFields($vehicle->toArray(), $fieldSet);
+        $data = VehicleFieldFilterService::applyApiPlan($vehicle->toArray(), $fieldSet);
 
         // Enrichissement : puissance en CV si jeu "full"
         if ($fieldSet === 'full' && isset($data['puissance_kw'])) {
@@ -128,7 +130,7 @@ class VehicleApiController extends Controller
         }
 
         $vehicle = Vehicle::active()
-            ->where('numero_tg', $this->normalizeTg($numero_tg))
+            ->where('numero_tg', TgNormalizerService::normalize($numero_tg))
             ->select(['numero_tg', 'marque', 'modele', 'nb_trous', 'entraxe', 'alesage', 'deport_et', 'pneus_origine'])
             ->first();
 
@@ -214,7 +216,7 @@ class VehicleApiController extends Controller
         }
 
         $vehicle = Vehicle::active()
-            ->where('numero_tg', $this->normalizeTg($numero_tg))
+            ->where('numero_tg', TgNormalizerService::normalize($numero_tg))
             ->select(['id', 'numero_tg', 'marque', 'modele', 'variante',
                       'nb_trous', 'entraxe', 'alesage', 'deport_et', 'pneus_origine'])
             ->first();
@@ -336,68 +338,11 @@ class VehicleApiController extends Controller
         ], $statusCode, ['Content-Type' => 'application/json; charset=utf-8']);
     }
 
-    // ── Filtrage des champs ───────────────────────────────────────────────────
-
-    /**
-     * Filtre les champs d'un tableau selon le jeu autorisé par le plan.
-     * Garantit qu'aucun champ interne (ID, slug, timestamps BDD) n'est exposé.
-     *
-     * @param  array  $data      Tableau brut du modèle Eloquent
-     * @param  string $fieldSet  'standard' | 'full'
-     * @return array  Tableau filtré
-     */
-    private function filterFields(array $data, string $fieldSet): array
-    {
-        $allowedFields = config("api_plans.field_sets.{$fieldSet}", []);
-        $hiddenFields  = config('api_plans.hidden_fields', []);
-
-        // Double protection :
-        // 1. On ne garde que les champs autorisés du plan
-        // 2. On retire les champs toujours cachés (même si dans la liste blanche)
-        $filtered = array_intersect_key($data, array_flip($allowedFields));
-        $filtered = array_diff_key($filtered, array_flip($hiddenFields));
-
-        // Conversion des dates en ISO 8601 (plus propre que les timestamps MySQL)
-        foreach (['imported_at'] as $dateField) {
-            if (isset($filtered[$dateField]) && $filtered[$dateField]) {
-                try {
-                    $filtered[$dateField] = \Carbon\Carbon::parse($filtered[$dateField])->toIso8601String();
-                } catch (\Throwable) {
-                    $filtered[$dateField] = null;
-                }
-            }
-        }
-
-        // Conversion des entiers (PDO peut retourner des strings pour les numerics)
-        $intFields = ['puissance_kw', 'cylindree', 'poids_vide', 'poids_total',
-                      'poids_remorquable', 'co2', 'nb_trous', 'entraxe', 'alesage', 'deport_et'];
-        foreach ($intFields as $f) {
-            if (isset($filtered[$f]) && $filtered[$f] !== null) {
-                $filtered[$f] = (int) $filtered[$f];
-            }
-        }
-
-        return $filtered;
-    }
-
     // ── Validation du numéro TG ───────────────────────────────────────────────
 
     private function isValidTg(string $tg): bool
     {
         return (bool) preg_match(self::REGEX_TG, trim($tg));
-    }
-
-    /**
-     * Normalise le numéro TG pour la recherche BDD.
-     * Gère les variantes : "27-012-000-08-00004", "27 012 000 08 00004", etc.
-     */
-    private function normalizeTg(string $tg): string
-    {
-        $tg = trim($tg);
-        // Remplacement des séparateurs alternatifs par des points
-        $tg = preg_replace('/[\s\-_]+/', '.', $tg);
-        $tg = preg_replace('/\.{2,}/', '.', $tg);
-        return trim($tg, '.');
     }
 
     // ── Fiche d'homologation PDF ──────────────────────────────────────────────
@@ -427,7 +372,7 @@ class VehicleApiController extends Controller
             );
         }
 
-        $vehicle = \App\Models\Vehicle::where('numero_tg', $this->normalizeTg($numero_tg))
+        $vehicle = \App\Models\Vehicle::where('numero_tg', TgNormalizerService::normalize($numero_tg))
             ->where('is_active', true)
             ->first();
 

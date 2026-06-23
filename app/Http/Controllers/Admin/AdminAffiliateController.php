@@ -21,7 +21,10 @@ class AdminAffiliateController extends BaseController
         // Sécurité : action réservée aux administrateurs (niveau 8).
         abort_unless(auth()->user()?->isAdmin(), 403, 'Accès réservé aux administrateurs.');
 
-        $affiliates = Affiliate::with('user')
+        $affiliates = Affiliate::with([
+                'user',
+                'earnings' => fn ($q) => $q->whereIn('status', ['pending', 'approved']),
+            ])
             ->withCount(['clicks', 'earnings'])
             ->orderByDesc('created_at')
             ->paginate(20);

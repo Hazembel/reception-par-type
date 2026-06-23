@@ -91,14 +91,14 @@
 
                 {{-- Séparateur + Liens rapides --}}
                 <div class="pt-4 mt-4 border-t border-slate-200 dark:border-white/5 pl-3 space-y-2">
-                    <a href="{{ route("{$locale}.faq", ['locale' => $locale]) }}"
+                    <a href="{{ route('faq', ['locale' => $locale]) }}"
                        class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-astra transition-colors duration-150">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         FAQ
                     </a>
-                    <a href="{{ route("{$locale}.search", ['locale' => $locale]) }}"
+                    <a href="{{ route('search', ['locale' => $locale]) }}"
                        class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-astra transition-colors duration-150">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
@@ -394,7 +394,7 @@
 
                     {{-- CTA Inscription --}}
                     <div class="text-center py-6">
-                        <a href="{{ route("{$locale}.register", ['locale' => $locale]) }}"
+                        <a href="{{ route('register', ['locale' => $locale]) }}"
                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-astra hover:bg-astra-600 text-white font-semibold text-sm transition-all duration-200 shadow-sm shadow-astra/20 hover:shadow-astra/40">
                             Commencer gratuitement — 10 fiches/mois
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

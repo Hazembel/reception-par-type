@@ -8,14 +8,24 @@ return [
 
     // ── Navigation ─────────────────────────────────────────────────────────
     'nav' => [
-        'home'     => 'Accueil',
-        'search'   => 'Recherche',
-        'compare'  => 'Comparer',
-        'pricing'  => 'Tarifs',
-        'login'    => 'Connexion',
-        'register' => 'Inscription',
-        'logout'   => 'Déconnexion',
-        'profile'  => 'Mon profil',
+        'home'        => 'Accueil',
+        'search'      => 'Recherche',
+        'compare'     => 'Comparer',
+        'pricing'     => 'Tarifs',
+        'login'       => 'Connexion',
+        'login_desc'  => 'Veuillez vous connecter pour accéder à votre espace.',
+        'register'    => 'Inscription',
+        'no_account'  => 'Pas encore de compte ?',
+        'remember_me' => 'Se souvenir de moi',
+        'logout'      => 'Déconnexion',
+        'profile'     => 'Mon profil',
+    ],
+
+    // ── Authentification ───────────────────────────────────────────────────
+    'auth' => [
+        'email'            => 'Adresse email',
+        'password'         => 'Mot de passe',
+        'forgot_password'  => 'Mot de passe oublié ?',
     ],
 
     // ── Champs techniques véhicule ─────────────────────────────────────────
@@ -74,6 +84,15 @@ return [
         'home_title'       => 'Données techniques automobiles officielles ASTRA — reception-par-type.ch',
         'home_tagline'     => 'Données techniques ASTRA officielles pour tous les véhicules suisses',
         'home_description' => 'Consultez les données techniques homologuées de tout véhicule immatriculé en Suisse par son numéro de réception par type (TG).',
+    ],
+
+    // ── Footer ─────────────────────────────────────────────────────────────
+    'footer' => [
+        'desc_line1' => 'Données techniques ASTRA — Homologations suisses.',
+        'desc_line2' => 'Non affilié à l\'OFROU/ASTRA.',
+        'legal' => 'Mentions légales',
+        'privacy' => 'Confidentialité',
+        'terms' => 'CGU',
     ],
 
 ];

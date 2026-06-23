@@ -127,7 +127,7 @@
              fait pulsater un halo cyan autour du bouton au survol de la carte.
         --}}
         <a
-            href="{{ route(app()->getLocale() . '.pricing', ['locale' => app()->getLocale()]) }}{{ $vehicleId ? '?unlock=' . $vehicleId : '' }}"
+            href="{{ url('/' . app()->getLocale() . '/pricing') }}{{ $vehicleId ? '?unlock=' . $vehicleId : '' }}"
             class="
                 relative group/btn
                 inline-flex items-center gap-2
@@ -159,7 +159,7 @@
         </a>
 
         {{-- Lien abonnement --}}
-        <a href="{{ route(app()->getLocale() . '.pricing', ['locale' => app()->getLocale()]) }}"
+        <a href="{{ url('/' . app()->getLocale() . '/pricing') }}"
            class="
                mt-2 text-xs text-slate-400 hover:text-astra
                underline underline-offset-2 decoration-dotted

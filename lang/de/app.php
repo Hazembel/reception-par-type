@@ -8,14 +8,24 @@ return [
 
     // ── Navigation ─────────────────────────────────────────────────────────
     'nav' => [
-        'home'     => 'Startseite',
-        'search'   => 'Suche',
-        'compare'  => 'Vergleichen',
-        'pricing'  => 'Preise',
-        'login'    => 'Anmelden',
-        'register' => 'Registrieren',
-        'logout'   => 'Abmelden',
-        'profile'  => 'Mein Profil',
+        'home'        => 'Startseite',
+        'search'      => 'Suche',
+        'compare'     => 'Vergleichen',
+        'pricing'     => 'Preise',
+        'login'       => 'Anmelden',
+        'login_desc'  => 'Bitte melden Sie sich an, um auf Ihr Konto zuzugreifen.',
+        'register'    => 'Registrieren',
+        'no_account'  => 'Noch kein Konto?',
+        'remember_me' => 'Angemeldet bleiben',
+        'logout'      => 'Abmelden',
+        'profile'     => 'Mein Profil',
+    ],
+
+    // ── Authentifizierung ──────────────────────────────────────────────────
+    'auth' => [
+        'email'           => 'E-Mail-Adresse',
+        'password'        => 'Passwort',
+        'forgot_password' => 'Passwort vergessen?',
     ],
 
     // ── Technische Fahrzeugfelder ──────────────────────────────────────────
@@ -71,6 +81,15 @@ return [
         'home_title'       => 'Offizielle technische Fahrzeugdaten ASTRA — reception-par-type.ch',
         'home_tagline'     => 'Offizielle ASTRA-Fahrzeugdaten für alle Schweizer Fahrzeuge',
         'home_description' => 'Technische Daten jedes in der Schweiz zugelassenen Fahrzeugs anhand der Typengenehmigungsnummer (TG).',
+    ],
+
+    // ── Fusszeile ──────────────────────────────────────────────────────────
+    'footer' => [
+        'desc_line1' => 'Offizielle ASTRA-Fahrzeugdaten — Schweizer Typengenehmigungen.',
+        'desc_line2' => 'Nicht mit OFROU/ASTRA verbunden.',
+        'legal'      => 'Impressum',
+        'privacy'    => 'Datenschutz',
+        'terms'      => 'Nutzungsbedingungen',
     ],
 
 ];

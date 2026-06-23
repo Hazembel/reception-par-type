@@ -169,37 +169,3 @@ class HreflangHelper
         return sprintf('<link rel="canonical" href="%s" />', e($url));
     }
 }
-
-// ── Fonction d'aide globale ───────────────────────────────────────────────────
-// Enregistrée via composer.json "autoload.files" ou AppServiceProvider
-
-if (!function_exists('hreflang_tags')) {
-    /**
-     * Génère les balises hreflang pour la vue Blade courante.
-     *
-     * Usage Blade : {!! hreflang_tags() !!}
-     * Usage Blade avec params : {!! hreflang_tags(['slug' => $vehicle->slug]) !!}
-     *
-     * @param  array<string, mixed> $extraParams
-     * @return string
-     */
-    function hreflang_tags(array $extraParams = []): string
-    {
-        return HreflangHelper::generate($extraParams);
-    }
-}
-
-if (!function_exists('canonical_tag')) {
-    /**
-     * Génère la balise canonical pour la vue Blade courante.
-     *
-     * Usage Blade : {!! canonical_tag() !!}
-     *
-     * @param  string|null $url
-     * @return string
-     */
-    function canonical_tag(?string $url = null): string
-    {
-        return HreflangHelper::canonical($url);
-    }
-}

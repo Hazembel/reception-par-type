@@ -45,6 +45,18 @@
     {{-- ══ Favicon ════════════════════════════════════════════════════════════ --}}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    {{-- ══ Anti-FOUC : applique 'dark' avant le premier paint ══════════════ --}}
+    {{-- Ce script DOIT précéder Vite pour éviter le flash de thème clair.   --}}
+    <script>
+        (function () {
+            var saved = localStorage.getItem('theme');
+            var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && systemDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
     {{-- ══ Assets (Vite) ══════════════════════════════════════════════════════ --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -114,7 +126,7 @@
         <nav class="max-w-7xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
 
             {{-- Logo --}}
-            <a href="{{ route(app()->getLocale() . '.home', ['locale' => app()->getLocale()]) }}"
+            <a href="{{ route('home', ['locale' => app()->getLocale()]) }}"
                class="flex items-center gap-2.5 group"
                aria-label="reception-par-type.ch — Accueil">
                 {{-- Icône vectorielle (compteur de vitesse stylisé) --}}
@@ -143,7 +155,7 @@
                 @endphp
 
                 @foreach($navLinks as $link)
-                    <a href="{{ route("{$locale}.{$link['route']}", ['locale' => $locale]) }}"
+                    <a href="{{ route($link['route'], ['locale' => $locale]) }}"
                        class="
                            px-3.5 py-1.5 rounded-lg text-sm font-medium
                            text-slate-600 dark:text-slate-300
@@ -195,7 +207,27 @@
                         "
                     >
                         @foreach(['fr' => '🇫🇷 FR', 'de' => '🇩🇪 DE', 'it' => '🇮🇹 IT', 'en' => '🇬🇧 EN'] as $loc => $label)
-                            <a href="/{{ $loc }}/"
+                            @php
+                                $localizedUrl = "/{$loc}/";
+                                try {
+                                    $currentRoute = Route::current();
+                                    if ($currentRoute && $currentRoute->getName()) {
+                                        $routeParams = Route::current()->parameters();
+                                        $routeParams['locale'] = $loc;
+                                        $localizedUrl = route($currentRoute->getName(), array_merge($routeParams, request()->query()));
+                                    } else {
+                                        $currentPath = request()->path();
+                                        $segments = explode('/', $currentPath);
+                                        if (count($segments) > 0 && in_array($segments[0], ['fr', 'de', 'it', 'en'])) {
+                                            $segments[0] = $loc;
+                                            $localizedUrl = '/' . implode('/', $segments) . (request()->getQueryString() ? '?' . request()->getQueryString() : '');
+                                        }
+                                    }
+                                } catch (\Exception $e) {
+                                    $localizedUrl = "/{$loc}/";
+                                }
+                            @endphp
+                            <a href="{{ $localizedUrl }}"
                                class="
                                    flex items-center px-3 py-2 text-sm
                                    {{ app()->getLocale() === $loc
@@ -232,7 +264,7 @@
 
                 {{-- CTA Auth --}}
                 @auth
-                    <a href="{{ route(app()->getLocale() . '.profile', ['locale' => app()->getLocale()]) }}"
+                    <a href="{{ route('account.affiliate.index', ['locale' => app()->getLocale()]) }}"
                        class="
                            px-3.5 py-1.5 rounded-lg text-sm font-medium
                            text-slate-700 dark:text-slate-200
@@ -242,7 +274,7 @@
                         {{ __('app.nav.profile') }}
                     </a>
                 @else
-                    <a href="{{ route(app()->getLocale() . '.login', ['locale' => app()->getLocale()]) }}"
+                    <a href="{{ route('login', ['locale' => app()->getLocale()]) }}"
                        class="
                            px-4 py-1.5 rounded-lg text-sm font-medium
                            bg-astra hover:bg-astra-600
@@ -275,14 +307,14 @@
                         réception<span class="text-astra">-par-type</span>.ch
                     </span>
                     <p class="mt-1 text-xs text-slate-400 max-w-xs">
-                        Données techniques ASTRA — Homologations suisses.
-                        Non affilié à l'OFROU/ASTRA.
+                        {{ __('app.footer.desc_line1') }}<br>
+                        {{ __('app.footer.desc_line2') }}
                     </p>
                 </div>
                 <div class="flex gap-6 text-xs text-slate-500 dark:text-slate-400">
-                    <a href="{{ route(app()->getLocale() . '.legal',   ['locale' => app()->getLocale()]) }}" class="hover:text-slate-900 dark:hover:text-white transition-colors">Mentions légales</a>
-                    <a href="{{ route(app()->getLocale() . '.privacy', ['locale' => app()->getLocale()]) }}" class="hover:text-slate-900 dark:hover:text-white transition-colors">Confidentialité</a>
-                    <a href="{{ route(app()->getLocale() . '.terms',   ['locale' => app()->getLocale()]) }}" class="hover:text-slate-900 dark:hover:text-white transition-colors">CGU</a>
+                    <a href="{{ route('legal', ['locale' => app()->getLocale()]) }}" class="hover:text-slate-900 dark:hover:text-white transition-colors">{{ __('app.footer.legal') }}</a>
+                    <a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="hover:text-slate-900 dark:hover:text-white transition-colors">{{ __('app.footer.privacy') }}</a>
+                    <a href="{{ route('terms', ['locale' => app()->getLocale()]) }}" class="hover:text-slate-900 dark:hover:text-white transition-colors">{{ __('app.footer.terms') }}</a>
                 </div>
             </div>
             <p class="mt-8 text-2xs text-slate-400 dark:text-slate-600">

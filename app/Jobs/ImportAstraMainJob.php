@@ -352,7 +352,7 @@ class ImportAstraMainJob implements ShouldQueue
             // Génération du slug uniquement pour les nouveaux véhicules
             // (les existants conservent leur slug pour ne pas casser les URLs)
             if ($isNew && empty($data['slug'])) {
-                $data['slug'] = $this->generateSlugFromData($data);
+                $data['slug'] = Vehicle::slugFromData($data);
             }
 
             $data['is_active']    = true;
@@ -390,23 +390,6 @@ class ImportAstraMainJob implements ShouldQueue
         $updated  = count($preparedRows) - $inserted;
 
         return ['inserted' => $inserted, 'updated' => $updated];
-    }
-
-    /**
-     * Génère un slug à partir des données parsées (sans instancier un modèle Vehicle).
-     * Utilisé dans le batch pour éviter le overhead Eloquent.
-     */
-    private function generateSlugFromData(array $data): string
-    {
-        $tgClean = preg_replace('/[^a-zA-Z0-9]/', '', $data['numero_tg'] ?? '');
-        $base    = implode(' ', array_filter([
-            $data['marque']   ?? '',
-            $data['modele']   ?? '',
-            $data['variante'] ?? '',
-            $tgClean,
-        ]));
-
-        return Str::slug($base) ?: 'vehicle-' . Str::random(8);
     }
 
     // ── Gestion des échecs ────────────────────────────────────────────────────

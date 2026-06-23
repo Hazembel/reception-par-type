@@ -7,14 +7,24 @@
 return [
 
     'nav' => [
-        'home'     => 'Home',
-        'search'   => 'Search',
-        'compare'  => 'Compare',
-        'pricing'  => 'Pricing',
-        'login'    => 'Login',
-        'register' => 'Register',
-        'logout'   => 'Logout',
-        'profile'  => 'My Profile',
+        'home'        => 'Home',
+        'search'      => 'Search',
+        'compare'     => 'Compare',
+        'pricing'     => 'Pricing',
+        'login'       => 'Login',
+        'login_desc'  => 'Please sign in to access your account.',
+        'register'    => 'Register',
+        'no_account'  => "Don't have an account?",
+        'remember_me' => 'Remember me',
+        'logout'      => 'Logout',
+        'profile'     => 'My Profile',
+    ],
+
+    // ── Authentication ─────────────────────────────────────────────────────
+    'auth' => [
+        'email'           => 'Email address',
+        'password'        => 'Password',
+        'forgot_password' => 'Forgot password?',
     ],
 
     'vehicle' => [
@@ -67,6 +77,15 @@ return [
         'home_title'       => 'Official ASTRA vehicle technical data — reception-par-type.ch',
         'home_tagline'     => 'Official ASTRA technical data for all Swiss vehicles',
         'home_description' => 'Look up the homologated technical data of any vehicle registered in Switzerland by its type approval number (TG).',
+    ],
+
+    // ── Footer ─────────────────────────────────────────────────────────────
+    'footer' => [
+        'desc_line1' => 'Official ASTRA technical data — Swiss homologations.',
+        'desc_line2' => 'Not affiliated with OFROU/ASTRA.',
+        'legal' => 'Legal Notice',
+        'privacy' => 'Privacy Policy',
+        'terms' => 'Terms of Service',
     ],
 
 ];

@@ -13,10 +13,10 @@
 
     {{-- ── Fil d'Ariane ─────────────────────────────────────────────────────── --}}
     <nav class="flex items-center gap-2 text-xs text-slate-400 mb-6" aria-label="Fil d'Ariane">
-        <a href="{{ route(app()->getLocale() . '.home', ['locale' => app()->getLocale()]) }}"
+        <a href="{{ route('home', ['locale' => app()->getLocale()]) }}"
            class="hover:text-astra transition-colors">Accueil</a>
         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        <a href="{{ route(app()->getLocale() . '.search', ['locale' => app()->getLocale()]) }}"
+        <a href="{{ route('search', ['locale' => app()->getLocale()]) }}"
            class="hover:text-astra transition-colors">Recherche</a>
         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <span class="text-slate-600 dark:text-slate-300">{{ $vehicle->marque }} {{ $vehicle->modele }}</span>

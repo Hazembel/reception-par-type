@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
+use App\Services\VehicleFieldFilterService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -27,25 +28,10 @@ class VehicleController extends BaseController
         $accessReason    = $request->attributes->get('access_reason', 'unknown');
         $vehicleAccess   = $request->attributes->get('vehicle_access', 'partial');
 
-        // ── Chargement conditionnel des données ───────────────────────────────
-        // Les données de base sont toujours chargées (motorisation, émissions).
-        // Les données avancées ne sont chargées QUE si l'accès est autorisé.
-        if ($canViewAdvanced) {
-            // Chargement complet : toutes les colonnes
-            $vehicle->loadMissing([]);
-            // Le modèle Vehicle a déjà tous les champs — rien à faire
-        } else {
-            // Données avancées nullifiées avant envoi à la vue
-            // → aucune donnée sensible dans le HTML source
-            $vehicle->poids_vide        = null;
-            $vehicle->poids_total       = null;
-            $vehicle->poids_remorquable = null;
-            $vehicle->nb_trous          = null;
-            $vehicle->entraxe           = null;
-            $vehicle->alesage           = null;
-            $vehicle->deport_et         = null;
-            $vehicle->pneus_origine     = null;
-        }
+        // ── Filtrage des champs selon les droits d'accès ─────────────────────
+        // Les données avancées (masses, roues) sont nullifiées si l'utilisateur
+        // n'a pas les droits — elles ne transitent donc jamais vers la vue.
+        VehicleFieldFilterService::applyWebAccess($vehicle, $canViewAdvanced);
 
         // ── Informations contextuelles pour l'affichage des CTA ──────────────
         $accessContext = $this->buildAccessContext($request, $accessReason);

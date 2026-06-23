@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SearchRequest;
 use App\Models\Vehicle;
+use App\Services\TgNormalizerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -66,7 +67,7 @@ class SearchController extends BaseController
 
             case 'tg':
                 // ── RECHERCHE PAR NUMÉRO TG ────────────────────────────────────
-                $normalizedTg = $this->normalizeTgForSearch($query);
+                $normalizedTg = TgNormalizerService::normalize($query);
                 $builder->where(function ($q) use ($normalizedTg) {
                     $q->where('numero_tg', $normalizedTg)
                       ->orWhere('numero_tg', 'like', $normalizedTg . '%');
@@ -198,24 +199,6 @@ class SearchController extends BaseController
 
         // 3. Sinon recherche texte.
         return 'text';
-    }
-
-    /**
-     * Normalise un numéro TG saisi pour la recherche BDD.
-     */
-    private function normalizeTgForSearch(string $tg): string
-    {
-        $digits = preg_replace('/[^0-9]/', '', $tg);
-
-        if (strlen($digits) >= 14) {
-            return substr($digits, 0, 2) . '.' .
-                   substr($digits, 2, 3) . '.' .
-                   substr($digits, 5, 3) . '.' .
-                   substr($digits, 8, 2) . '.' .
-                   substr($digits, 10);
-        }
-
-        return $tg;
     }
 
     // ── Génération dynamique des méta SEO ─────────────────────────────────────

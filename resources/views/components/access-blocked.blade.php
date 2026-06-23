@@ -68,7 +68,7 @@
                     <p class="text-2xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
                         {{ __('access.comparison.one_time_desc') }}
                     </p>
-                    <a href="{{ route("{$locale}.pricing", ['locale' => $locale]) }}?unlock={{ $vehicleId }}"
+                    <a href="{{ url('/' . $locale . '/pricing') }}?unlock={{ $vehicleId }}"
                        class="block w-full text-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-astra text-white hover:bg-astra-600 transition-colors duration-150">
                         {{ __('access.comparison.cta_one_time') }}
                     </a>
@@ -83,7 +83,7 @@
                     <p class="text-2xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
                         {{ __('access.comparison.starter_desc') }}
                     </p>
-                    <a href="{{ route("{$locale}.pricing", ['locale' => $locale]) }}"
+                    <a href="{{ url('/' . $locale . '/pricing') }}"
                        class="block w-full text-center px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors duration-150 text-slate-700 dark:text-slate-300">
                         {{ __('access.comparison.cta_subscribe') }}
                     </a>
@@ -98,7 +98,7 @@
                     <p class="text-2xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
                         {{ __('access.comparison.pro_desc') }}
                     </p>
-                    <a href="{{ route("{$locale}.pricing", ['locale' => $locale]) }}"
+                    <a href="{{ url('/' . $locale . '/pricing') }}"
                        class="block w-full text-center px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors duration-150 text-slate-700 dark:text-slate-300">
                         {{ __('access.comparison.cta_subscribe') }}
                     </a>
@@ -117,7 +117,7 @@
             <p class="text-sm font-medium text-slate-900 dark:text-white mb-1">
                 {{ __('access.no_tokens', ['balance' => $context['tokens_balance'] ?? 0]) }}
             </p>
-            <a href="{{ route("{$locale}.pricing", ['locale' => $locale]) }}"
+            <a href="{{ url('/' . $locale . '/pricing') }}"
                class="mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold transition-all duration-200 shadow-sm">
                 {{ __('access.top_up_tokens') }}
             </a>
@@ -134,7 +134,7 @@
             <p class="text-sm font-medium text-slate-900 dark:text-white mb-1">
                 {{ __('access.quota_exceeded', ['limit' => $context['monthly_limit'] ?? 500]) }}
             </p>
-            <a href="{{ route("{$locale}.pricing", ['locale' => $locale]) }}"
+            <a href="{{ url('/' . $locale . '/pricing') }}"
                class="mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-astra hover:bg-astra-600 text-white text-sm font-semibold transition-all duration-200 shadow-sm shadow-astra/20">
                 {{ __('access.upgrade_to') }}
             </a>

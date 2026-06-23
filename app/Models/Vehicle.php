@@ -148,6 +148,24 @@ class Vehicle extends Model
     }
 
     /**
+     * Génère un slug de base à partir d'un tableau de données brutes (sans requête DB).
+     * Utilisé par les jobs d'import pour éviter l'overhead Eloquent sur les gros volumes.
+     * Ne garantit PAS l'unicité — c'est la contrainte UNIQUE sur numero_tg qui l'assure.
+     */
+    public static function slugFromData(array $data): string
+    {
+        $tgClean = preg_replace('/[^a-zA-Z0-9]/', '', $data['numero_tg'] ?? '');
+        $base    = implode(' ', array_filter([
+            $data['marque']   ?? '',
+            $data['modele']   ?? '',
+            $data['variante'] ?? '',
+            $tgClean,
+        ]));
+
+        return Str::slug($base) ?: 'vehicle-' . strtolower($tgClean ?: Str::random(8));
+    }
+
+    /**
      * Génère un slug unique à partir des champs d'identification.
      * Le numéro TG nettoyé est ajouté en suffixe pour garantir l'unicité.
      */

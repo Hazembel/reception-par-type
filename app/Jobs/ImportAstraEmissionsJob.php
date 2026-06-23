@@ -176,8 +176,9 @@ class ImportAstraEmissionsJob implements ShouldQueue
                 $chunk[] = $parsed;
 
                 if (count($chunk) >= self::CHUNK_SIZE) {
-                    $stats['lines_updated'] += $this->applyEmissionsChunk($chunk);
-                    $stats['lines_skipped'] += count($chunk) - $this->lastUpdatedCount;
+                    $updatedInChunk          = $this->applyEmissionsChunk($chunk);
+                    $stats['lines_updated'] += $updatedInChunk;
+                    $stats['lines_skipped'] += count($chunk) - $updatedInChunk;
                     $chunk = [];
                     gc_collect_cycles();
 
@@ -194,8 +195,9 @@ class ImportAstraEmissionsJob implements ShouldQueue
 
             // Dernier chunk (résidu)
             if (!empty($chunk)) {
-                $stats['lines_updated'] += $this->applyEmissionsChunk($chunk);
-                $stats['lines_skipped'] += count($chunk) - $this->lastUpdatedCount;
+                $updatedInChunk          = $this->applyEmissionsChunk($chunk);
+                $stats['lines_updated'] += $updatedInChunk;
+                $stats['lines_skipped'] += count($chunk) - $updatedInChunk;
             }
 
             // ── Finalisation ──────────────────────────────────────────────────
@@ -227,12 +229,6 @@ class ImportAstraEmissionsJob implements ShouldQueue
     }
 
     /**
-     * Nombre de fiches réellement mises à jour par le dernier chunk traité.
-     * Sert à calculer les lignes "skipped" (TG inconnu) sans requête supplémentaire.
-     */
-    private int $lastUpdatedCount = 0;
-
-    /**
      * Applique un chunk d'émissions aux véhicules existants, par numero_tg.
      *
      * On ne met à jour QUE les colonnes réellement présentes dans le fichier,
@@ -245,7 +241,6 @@ class ImportAstraEmissionsJob implements ShouldQueue
     private function applyEmissionsChunk(array $chunk): int
     {
         if (empty($chunk)) {
-            $this->lastUpdatedCount = 0;
             return 0;
         }
 
@@ -265,7 +260,6 @@ class ImportAstraEmissionsJob implements ShouldQueue
             ->all();
 
         if (empty($existingTgs)) {
-            $this->lastUpdatedCount = 0;
             return 0;
         }
 
@@ -295,8 +289,6 @@ class ImportAstraEmissionsJob implements ShouldQueue
                 $updated++;
             }
         });
-
-        $this->lastUpdatedCount = $updated;
 
         return $updated;
     }

@@ -6,6 +6,7 @@ use App\Http\Middleware\TrackAffiliate;
 use App\Models\PricingPlan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Controller : CheckoutController  [CORRECTIF BUG #3]
@@ -66,7 +67,7 @@ class CheckoutController extends Controller
         try {
             $order = $this->createPayPalOrder($amountChf, $customId, $validated);
         } catch (\Throwable $e) {
-            \Log::error('Échec création ordre PayPal', ['error' => $e->getMessage()]);
+            Log::error('Échec création ordre PayPal', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'error'   => 'PAYPAL_ERROR',

@@ -88,8 +88,23 @@ class ImportAstraNewsletterJob implements ShouldQueue
         ]);
 
         // ── Traitement séquentiel de chaque fichier newsletter ─────────────────
+        $consecutiveFails = 0;
+        $lastException    = null;
+
         foreach ($filesToProcess as $filePath) {
-            $this->processNewsletterFile($filePath);
+            try {
+                $this->processNewsletterFile($filePath);
+                $consecutiveFails = 0;
+            } catch (\Throwable $e) {
+                $consecutiveFails++;
+                $lastException = $e;
+            }
+        }
+
+        // Si TOUS les fichiers ont échoué, remonter l'exception pour que le job
+        // soit marqué "failed" et que les alertes de supervision se déclenchent.
+        if ($consecutiveFails === count($filesToProcess) && $lastException !== null) {
+            throw $lastException;
         }
     }
 
@@ -190,7 +205,7 @@ class ImportAstraNewsletterJob implements ShouldQueue
             Log::channel('imports')->error("[5000] Échec {$filename}", [
                 'error' => $e->getMessage(),
             ]);
-            // On ne relance pas l'exception : on continue avec les autres fichiers
+            throw $e; // Remonté au handle() qui décide si c'est systémique
         } finally {
             // Suppression garantie du fichier traité (succès ou échec).
             $this->cleanupFile($filePath);
@@ -314,12 +329,7 @@ class ImportAstraNewsletterJob implements ShouldQueue
             $isNew = !isset($existingTgs[$data['numero_tg']]);
 
             if ($isNew && empty($data['slug'])) {
-                $tgClean = preg_replace('/[^a-zA-Z0-9]/', '', $data['numero_tg'] ?? '');
-                $base    = implode(' ', array_filter([
-                    $data['marque'] ?? '', $data['modele'] ?? '',
-                    $data['variante'] ?? '', $tgClean,
-                ]));
-                $data['slug'] = Str::slug($base) ?: 'vehicle-' . Str::random(8);
+                $data['slug'] = Vehicle::slugFromData($data);
             }
 
             $data['is_active']   = true;

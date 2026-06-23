@@ -40,25 +40,25 @@
                     reception-par-type<span class="text-red-600">.ch</span>
                 </div>
                 <div class="text-xs font-semibold tracking-widest uppercase text-slate-400 mt-1">
-                    {{ __('app.seo.home_tagline', [], null, app()->getLocale()) ?: 'Données techniques ASTRA officielles' }}
+                    {{ __('home.hero.tagline') }}
                 </div>
             </div>
         </div>
         {{-- Badge source officielle --}}
         <div class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-astra/20 bg-astra/5 text-xs font-semibold text-astra">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            Source officielle OFROU / ASTRA · Synchronisé mensuellement
+            {{ __('home.hero.badge') }}
         </div>
     </div>
 
     {{-- ── Headline ──────────────────────────────────────────────────────────── --}}
     <div class="text-center px-4 mb-8" style="animation:fadeUp .8s .15s ease both;opacity:0">
         <h1 class="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-slate-900 dark:text-white max-w-3xl leading-tight tracking-tight">
-            Le numéro TG de votre<br>
-            <span class="text-astra">carte grise</span>, décodé.
+            {{ __('home.hero.title') }}<br>
+            <span class="text-astra">{{ __('home.hero.title_highlight') }}</span>{{ __('home.hero.title_suffix') }}
         </h1>
         <p class="mt-4 text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Accédez instantanément aux données techniques officielles de tout véhicule homologué en Suisse — poids, moteur, jantes, émissions, impôts cantonaux, fiche PDF.
+            {{ __('home.hero.subtitle') }}
         </p>
     </div>
 
@@ -71,12 +71,12 @@
                 <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <input type="text" name="query" placeholder="Numéro TG, VIN, marque/modèle…"
+                <input type="text" name="query" placeholder="{{ __('home.hero.search_placeholder') }}"
                        class="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 outline-none text-base py-2">
             </div>
             <button type="submit"
                     class="px-6 py-3 rounded-xl bg-astra hover:bg-astra-600 text-white font-semibold text-sm transition-colors flex-shrink-0">
-                Rechercher
+                {{ __('home.hero.search_button') }}
             </button>
         </form>
         <div class="flex flex-wrap gap-x-4 gap-y-1 mt-3 justify-center">
@@ -92,9 +92,9 @@
     {{-- ── Compteurs ─────────────────────────────────────────────────────────── --}}
     <div class="grid grid-cols-3 gap-6 sm:gap-12 px-4" style="animation:fadeUp .8s .45s ease both;opacity:0">
         @foreach([
-            ['key'=>'vehicles', 'suffix'=>'+', 'label'=>'Véhicules indexés'],
-            ['key'=>'brands',   'suffix'=>'+', 'label'=>'Marques couvertes'],
-            ['key'=>'uptime',   'suffix'=>'%', 'label'=>'Disponibilité SLA'],
+            ['key'=>'vehicles', 'suffix'=>'+', 'label'=>__('home.hero.stats.vehicles')],
+            ['key'=>'brands',   'suffix'=>'+', 'label'=>__('home.hero.stats.brands')],
+            ['key'=>'uptime',   'suffix'=>'%', 'label'=>__('home.hero.stats.uptime')],
         ] as $c)
         <div class="text-center">
             <div class="font-display font-bold text-3xl sm:text-4xl text-slate-900 dark:text-white">
@@ -125,8 +125,8 @@
          onerror="this.parentElement.style.background='linear-gradient(135deg,#0B2A4A,#2563EB)';this.remove()">
     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
     <div class="absolute bottom-6 left-8 right-8 text-white">
-        <p class="text-sm font-semibold tracking-widest uppercase opacity-70">Données officielles OFROU</p>
-        <p class="text-xl font-bold mt-1">Pour chaque véhicule circulant en Suisse</p>
+        <p class="text-sm font-semibold tracking-widest uppercase opacity-70">{{ __('home.photo_band.subtitle') }}</p>
+        <p class="text-xl font-bold mt-1">{{ __('home.photo_band.title') }}</p>
     </div>
 </div>
 
@@ -136,61 +136,62 @@
 <section class="py-24 bg-white dark:bg-night px-4">
     <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
-            <div class="inline-block px-3 py-1 rounded-full bg-astra/10 text-astra text-xs font-bold tracking-widest uppercase mb-4">Nos atouts</div>
-            <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-900 dark:text-white">Pourquoi choisir reception-par-type.ch ?</h2>
-            <p class="mt-3 text-slate-500 dark:text-slate-400 max-w-xl mx-auto">La plateforme de référence pour les professionnels de l'automobile, les importateurs et les services cantonaux.</p>
+            <div class="inline-block px-3 py-1 rounded-full bg-astra/10 text-astra text-xs font-bold tracking-widest uppercase mb-4">{{ __('home.features.badge') }}</div>
+            <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-900 dark:text-white">{{ __('home.features.title') }}</h2>
+            <p class="mt-3 text-slate-500 dark:text-slate-400 max-w-xl mx-auto">{{ __('home.features.subtitle') }}</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @php
+            $atouts_data = __('home.features.items');
             $atouts = [
                 [
                     'color' => 'bg-blue-50 dark:bg-blue-900/20',
                     'icon_bg' => 'bg-astra',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>',
-                    'title' => 'Instantané',
-                    'desc' => 'Résultats en moins de 200 ms depuis notre base de données synchronisée mensuellement avec les fichiers TARGA de l\'ASTRA.',
-                    'badge' => '< 200 ms',
+                    'title' => $atouts_data[0]['title'],
+                    'desc' => $atouts_data[0]['desc'],
+                    'badge' => $atouts_data[0]['badge'],
                 ],
                 [
                     'color' => 'bg-green-50 dark:bg-green-900/20',
                     'icon_bg' => 'bg-green-600',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
-                    'title' => 'Source officielle',
-                    'desc' => 'Données directement issues des fichiers TG-Automobil, TG-Moto et emissionen.txt publiés par l\'Office fédéral des routes (OFROU).',
-                    'badge' => 'ASTRA / OFROU',
+                    'title' => $atouts_data[1]['title'],
+                    'desc' => $atouts_data[1]['desc'],
+                    'badge' => $atouts_data[1]['badge'],
                 ],
                 [
                     'color' => 'bg-red-50 dark:bg-red-900/20',
                     'icon_bg' => 'bg-red-600',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>',
-                    'title' => 'RGPD & LPD',
-                    'desc' => 'Hébergé en Suisse. Aucune donnée personnelle revendue. Conforme à la Loi fédérale sur la protection des données (LPD révisée 2023).',
-                    'badge' => 'Hébergé CH',
+                    'title' => $atouts_data[2]['title'],
+                    'desc' => $atouts_data[2]['desc'],
+                    'badge' => $atouts_data[2]['badge'],
                 ],
                 [
                     'color' => 'bg-purple-50 dark:bg-purple-900/20',
                     'icon_bg' => 'bg-purple-600',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
-                    'title' => 'Fiche PDF officielle',
-                    'desc' => 'Générez en un clic une fiche d\'homologation PDF complète avec correspondances européennes (directive 1999/37/CE), prête pour vos démarches.',
-                    'badge' => 'Niveaux 5+',
+                    'title' => $atouts_data[3]['title'],
+                    'desc' => $atouts_data[3]['desc'],
+                    'badge' => $atouts_data[3]['badge'],
                 ],
                 [
                     'color' => 'bg-orange-50 dark:bg-orange-900/20',
                     'icon_bg' => 'bg-orange-500',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>',
-                    'title' => 'API REST B2B',
-                    'desc' => 'Intégrez nos données dans vos systèmes : ERP, configurateur, logiciel d\'atelier. Clé API par client, quota mensuel, 429 automatique.',
-                    'badge' => 'Niveaux 6-8',
+                    'title' => $atouts_data[4]['title'],
+                    'desc' => $atouts_data[4]['desc'],
+                    'badge' => $atouts_data[4]['badge'],
                 ],
                 [
                     'color' => 'bg-teal-50 dark:bg-teal-900/20',
                     'icon_bg' => 'bg-teal-600',
                     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>',
-                    'title' => 'Taxes cantonales',
-                    'desc' => 'Simulez l\'impôt annuel sur les véhicules dans 12 cantons suisses. Calcul basé sur les barèmes officiels (poids, puissance, CO₂).',
-                    'badge' => '12 cantons',
+                    'title' => $atouts_data[5]['title'],
+                    'desc' => $atouts_data[5]['desc'],
+                    'badge' => $atouts_data[5]['badge'],
                 ],
             ];
             @endphp
@@ -236,20 +237,20 @@
                 <div class="absolute bottom-6 left-6 right-6">
                     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-astra text-white text-sm font-semibold shadow-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Case 24 du permis de circulation
+                        {{ __('home.how_it_works.image_annotation') }}
                     </div>
                 </div>
             </div>
 
             {{-- Texte --}}
             <div style="animation:fadeRight .8s .1s ease both;opacity:0">
-                <div class="inline-block px-3 py-1 rounded-full bg-astra/10 text-astra text-xs font-bold tracking-widest uppercase mb-4">Comment ça marche</div>
-                <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-900 dark:text-white mb-6">Du numéro TG à la fiche complète en 3 secondes</h2>
+                <div class="inline-block px-3 py-1 rounded-full bg-astra/10 text-astra text-xs font-bold tracking-widest uppercase mb-4">{{ __('home.how_it_works.badge') }}</div>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-900 dark:text-white mb-6">{{ __('home.how_it_works.title') }}</h2>
                 <div class="space-y-5">
                     @foreach([
-                        ['n'=>'1', 'title'=>'Trouvez le numéro TG', 'desc'=>'Il se trouve en case 24 de votre permis de circulation suisse (ex : 27.012.000.08.00004). Vous pouvez aussi saisir un VIN complet — il sera automatiquement tronqué à 9 caractères pour la recherche.'],
-                        ['n'=>'2', 'title'=>'Obtenez la fiche technique', 'desc'=>'Masse à vide, PMA, puissance kW/CV, cylindrée, carburant, montes pneumatiques autorisées, émissions CO₂, code Euro, normes antipollution.'],
-                        ['n'=>'3', 'title'=>'Exportez ou intégrez', 'desc'=>'Téléchargez la fiche PDF officielle ou consommez nos données via l\'API REST. Chaque donnée porte sa référence de champ ASTRA et son équivalent EU (directive 1999/37/CE).'],
+                        ['n'=>'1', 'title'=>__('home.how_it_works.steps.0.title'), 'desc'=>__('home.how_it_works.steps.0.desc')],
+                        ['n'=>'2', 'title'=>__('home.how_it_works.steps.1.title'), 'desc'=>__('home.how_it_works.steps.1.desc')],
+                        ['n'=>'3', 'title'=>__('home.how_it_works.steps.2.title'), 'desc'=>__('home.how_it_works.steps.2.desc')],
                     ] as $step)
                     <div class="flex gap-4">
                         <div class="w-9 h-9 rounded-full bg-astra text-white font-bold text-sm flex items-center justify-center flex-shrink-0 mt-0.5">{{ $step['n'] }}</div>
@@ -281,16 +282,16 @@
             <div>
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-astra/20 text-spark text-xs font-bold tracking-widest uppercase mb-6">
                     <span class="w-2 h-2 rounded-full bg-spark animate-pulse"></span>
-                    API REST B2B
+                    {{ __('home.api.badge') }}
                 </div>
-                <h2 class="font-display font-bold text-3xl sm:text-4xl text-white mb-4">Intégrez nos données dans vos outils</h2>
-                <p class="text-slate-400 mb-8 leading-relaxed">Clé API par client, quota mensuel adapté à votre volume, réponses JSON structurées. Les requêtes sans résultat ne sont pas facturées.</p>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-white mb-4">{{ __('home.api.title') }}</h2>
+                <p class="text-slate-400 mb-8 leading-relaxed">{{ __('home.api.desc') }}</p>
                 <div class="space-y-3">
                     @foreach([
-                        ['method'=>'GET', 'path'=>'/api/v1/vehicle/tg/{numero_tg}',         'desc'=>'Fiche technique complète'],
-                        ['method'=>'GET', 'path'=>'/api/v1/vehicle/tyres/{numero_tg}',       'desc'=>'Montes pneumatiques + équivalences ±8%'],
-                        ['method'=>'GET', 'path'=>'/api/v1/vehicle/homologation/{numero_tg}','desc'=>'Fiche PDF officielle (niveau 5+)'],
-                        ['method'=>'GET', 'path'=>'/api/v1/vehicle/tax/{numero_tg}?canton=VD','desc'=>'Impôt cantonal simulé'],
+                        ['method'=>'GET', 'path'=>'/api/v1/vehicle/tg/{numero_tg}',         'desc'=>__('home.api.endpoints.0.desc')],
+                        ['method'=>'GET', 'path'=>'/api/v1/vehicle/tyres/{numero_tg}',       'desc'=>__('home.api.endpoints.1.desc')],
+                        ['method'=>'GET', 'path'=>'/api/v1/vehicle/homologation/{numero_tg}','desc'=>__('home.api.endpoints.2.desc')],
+                        ['method'=>'GET', 'path'=>'/api/v1/vehicle/tax/{numero_tg}?canton=VD','desc'=>__('home.api.endpoints.3.desc')],
                     ] as $ep)
                     <div class="flex items-start gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/8 transition-colors">
                         <span class="font-mono text-xs font-bold px-2 py-1 rounded bg-astra/20 text-spark flex-shrink-0 mt-0.5">{{ $ep['method'] }}</span>
@@ -304,12 +305,12 @@
                 <div class="mt-8 flex gap-3">
                     <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}"
                        class="px-5 py-2.5 rounded-xl bg-astra hover:bg-astra-600 text-white font-semibold text-sm transition-colors">
-                        Voir la documentation
+                        {{ __('home.api.docs_btn') }}
                     </a>
                     @auth
                     <a href="{{ route('account.affiliate.index', ['locale' => app()->getLocale()]) }}"
                        class="px-5 py-2.5 rounded-xl border border-white/20 hover:border-white/40 text-white font-semibold text-sm transition-colors">
-                        Mes clés API →
+                        {{ __('home.api.keys_btn') }}
                     </a>
                     @endauth
                 </div>
@@ -361,8 +362,8 @@
          onerror="this.parentElement.style.background='linear-gradient(135deg,#1e293b,#0f172a)';this.remove()">
     <div class="absolute inset-0 bg-gradient-to-r from-night/70 via-night/30 to-transparent"></div>
     <div class="absolute top-1/2 -translate-y-1/2 left-8 sm:left-16">
-        <p class="text-xs font-bold tracking-widest uppercase text-spark mb-1">Professionnels</p>
-        <p class="text-white text-xl sm:text-2xl font-bold max-w-xs leading-snug">Intégrez les données ASTRA dans votre logiciel d'atelier</p>
+        <p class="text-xs font-bold tracking-widest uppercase text-spark mb-1">{{ __('home.professionals.badge') }}</p>
+        <p class="text-white text-xl sm:text-2xl font-bold max-w-xs leading-snug">{{ __('home.professionals.title') }}</p>
     </div>
 </div>
 
@@ -379,7 +380,7 @@
     <div class="absolute inset-0 bg-night/60"></div>
     <div class="absolute inset-0 flex items-center justify-center">
         <p class="text-white text-xl sm:text-2xl font-display font-bold text-center px-4 drop-shadow-lg">
-            La référence pour les professionnels de l'automobile suisse
+            {{ __('home.official.title') }}
         </p>
     </div>
 </div>
@@ -395,16 +396,16 @@
                 <rect x="6" y="15" width="28" height="10" rx="1.5" fill="white"/>
             </svg>
         </div>
-        <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-900 dark:text-white mb-4">Prêt à démarrer ?</h2>
-        <p class="text-slate-500 dark:text-slate-400 mb-8">Accès gratuit pour les données de base. Plans professionnels à partir de quelques francs par mois.</p>
+        <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-900 dark:text-white mb-4">{{ __('home.cta.title') }}</h2>
+        <p class="text-slate-500 dark:text-slate-400 mb-8">{{ __('home.cta.desc') }}</p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
             <a href="{{ route('search', ['locale' => app()->getLocale()]) }}"
                class="px-8 py-3.5 rounded-2xl bg-astra hover:bg-astra-600 text-white font-semibold text-sm transition-colors shadow-lg shadow-astra/20">
-                Rechercher un véhicule →
+                {{ __('home.cta.search_btn') }}
             </a>
             <a href="{{ route('faq', ['locale' => app()->getLocale()]) }}"
                class="px-8 py-3.5 rounded-2xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:border-astra/30 transition-colors">
-                Voir les tarifs
+                {{ __('home.cta.pricing_btn') }}
             </a>
         </div>
     </div>

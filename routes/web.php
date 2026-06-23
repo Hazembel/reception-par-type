@@ -9,6 +9,8 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PayPalWebhookController;
 use App\Http\Controllers\Account\AffiliateController;
 use App\Http\Controllers\Account\InvoiceController;
+use App\Http\Controllers\PricingController;
+use App\Http\Controllers\CompareController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -33,12 +35,7 @@ Route::post('/webhooks/paypal', [PayPalWebhookController::class, 'handle'])
     ->name('webhooks.paypal');
 
 // ── Déconnexion (route nommée 'logout', utilisée par le back-office) ─────────
-Route::post('/logout', function (\Illuminate\Http\Request $request) {
-    \Illuminate\Support\Facades\Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect('/');
-})->middleware('web')->name('logout');
+Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->middleware('web')->name('logout');
 
 // ── Redirection racine → locale préférée du navigateur ───────────────────────
 Route::get('/', function () {
@@ -57,6 +54,9 @@ Route::prefix('{locale}')
 
         Route::get('/search',  [SearchController::class, 'index'])->name('search');
         Route::post('/search', [SearchController::class, 'results'])->name('search.results');
+
+        Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
+        Route::get('/compare', [CompareController::class, 'index'])->name('compare');
 
         // Fiche véhicule par slug (Route Model Binding — ULID jamais exposé)
         // Le middleware vehicle.access applique la matrice freemium + anti-cloaking.
@@ -81,9 +81,12 @@ Route::prefix('{locale}')
             Route::get('/invoices/{invoice}/download',  [InvoiceController::class, 'download'])->name('invoices.download');
         });
 
-        // ── Pages d'authentification (placeholders — Breeze/Fortify à brancher) ─
-        Route::get('/login',    fn () => abort(404))->name('login');
-        Route::get('/register', fn () => abort(404))->name('register');
+        // ── Pages d'authentification ─────────────────────────────────────────
+        Route::get('/login',  [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+        Route::get('/register',       fn () => abort(404))->name('register');
+        Route::get('/password/reset', fn () => abort(404))->name('password.request');
+        Route::get('/email/verify', fn () => view('auth.verify-email'))->middleware('auth')->name('verification.notice');
 
         // ── Pages légales (LPD / RGPD) ────────────────────────────────────────
         Route::get('/mentions-legales', fn () => view('legal.mentions', ['meta_title' => 'Mentions Légales', 'meta_description' => '']))->name('legal');
