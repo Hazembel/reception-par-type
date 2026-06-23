@@ -1,0 +1,92 @@
+<?php
+/**
+ * Traduzioni IT — Modulo 4
+ * resources/lang/it/help.php
+ */
+return [
+    'tooltip' => [
+        'numero_tg'         => 'Numero di omologazione per tipo (TG): Identificatore ufficiale assegnato dall\'ASTRA all\'omologazione di un modello in Svizzera. Si trova alla <strong>casella 24</strong> del permesso di circolazione.',
+        'entraxe'           => 'Interasse fori (PCD): Distanza in mm tra i centri di due fori di fissaggio opposti del cerchio. Es: 5×112 = 5 fori su un cerchio di 112 mm.',
+        'alesage'           => 'Centraggio mozzo: Diametro interno del foro centrale del cerchio in mm. Deve corrispondere esattamente al diametro del mozzo del veicolo.',
+        'deport_et'         => 'Offset (ET/Einpresstiefe): Distanza in mm tra il piano di fissaggio del cerchio e il suo piano mediano. ET positivo avvicina il cerchio al centro del veicolo.',
+        'poids_remorquable' => 'Massa rimorchiabile massima (rimorchio frenato): Peso massimo autorizzato del rimorchio che il veicolo può trainare.',
+        'poids_vide'        => 'Tara del veicolo secondo i dati di omologazione ASTRA, compresi i fluidi, senza passeggeri né carico.',
+        'poids_total'       => 'Massa totale ammissibile (MTA): Peso massimo del veicolo a pieno carico (veicolo + passeggeri + bagagli).',
+        'co2'               => 'Emissioni di CO₂ in g/km, misurate secondo WLTP (dal 2018) o NEDC. Utilizzato per il calcolo dell\'imposta cantonale sui veicoli.',
+        'code_emissions'    => 'Norma europea sulle emissioni (Euro 1–6). Determina le tasse cantonali e l\'accesso alle zone a basse emissioni.',
+        'puissance_kw'      => 'Potenza massima del motore in kilowatt (kW). 1 kW ≈ 1.36 CV. Unità legale in Svizzera.',
+        'cylindree'         => 'Cilindrata del motore in cm³. Rilevante per la tassazione in alcuni Cantoni svizzeri.',
+        'boite_vitesse'     => 'Tipo di trasmissione: M = Manuale, A = Automatico, CVT = Continua, DSG/PDK = Doppia frizione.',
+        'pneus_origine'     => 'Dimensioni degli pneumatici di primo impianto. Formato: Larghezza/Altezza R Diametro Indice_carico Indice_velocità (es: 205/55 R16 91H).',
+        'nb_trous'          => 'Numero di fori di fissaggio del cerchio (di solito 4 o 5). Deve corrispondere esattamente al numero di prigionieri del mozzo.',
+        'slug'              => 'Identificatore URL univoco generato automaticamente per il SEO. Derivato da marca, modello e numero TG.',
+    ],
+    'faq' => [
+        'page_title'        => 'Domande frequenti',
+        'page_description'  => 'Tutto quello che c\'è da sapere sui dati ASTRA, i numeri TG, i cerchi e il nostro servizio.',
+        'search_placeholder'=> 'Cerca una domanda…',
+        'no_results'        => 'Nessuna domanda corrisponde alla ricerca.',
+        'categories' => [
+            'general' => 'Generale & N° TG',
+            'wheels'  => 'Pneumatici & Cerchi',
+            'pricing' => 'Prezzi & Token',
+            'account' => 'Account & API',
+        ],
+        'questions' => [
+            ['cat' => 'general', 'question' => 'Che cos\'è il numero di omologazione (TG)?', 'answer' => 'Il numero di omologazione (TG) è l\'identificatore ufficiale dell\'USTRA per l\'omologazione di un tipo di veicolo in Svizzera. Si trova nel <strong>campo 24</strong> della licenza di circolazione. Esempio: <code>27.012.000.08.00004</code>.'],
+            ['cat' => 'general', 'question' => 'I dati sono ufficiali e aggiornati?', 'answer' => 'Sì. I nostri dati provengono direttamente dai <strong>file TARGA dell\'USTRA</strong>. Il file principale è aggiornato mensilmente (il giorno 10), le nuove omologazioni vengono integrate settimanalmente tramite la newsletter USTRA.'],
+            ['cat' => 'general', 'question' => 'Posso cercare con un VIN completo?', 'answer' => 'Sì. Potete inserire il VIN completo di 17 caratteri della vostra licenza di circolazione: il sistema lo tronca automaticamente ai primi 9 caratteri per interrogare l\'indice in modo efficiente.'],
+            ['cat' => 'general', 'question' => 'Quali tipi di veicolo sono coperti?', 'answer' => 'Automobili, motociclette e rimorchi omologati in Svizzera. I dati sono importati dai file USTRA separati (TG-Automobil, TG-Moto, TG-Anhänger) e dal file delle emissioni.'],
+            ['cat' => 'wheels', 'question' => 'Come leggo i dati dei cerchi (PCD, foro centrale, ET)?', 'answer' => '<ul><li><strong>Interasse (PCD)</strong>: numero di fori × diametro in mm (es. 5×112).</li><li><strong>Foro centrale</strong>: alesaggio centrale in mm (es. 57.1).</li><li><strong>Offset ET</strong>: in mm, positivo o negativo. Tolleranza circa ±10 mm, verificare le norme cantonali MFK.</li></ul>'],
+            ['cat' => 'wheels', 'question' => 'Le dimensioni degli pneumatici indicate sono le uniche omologate?', 'answer' => 'I dati USTRA indicano gli pneumatici di <strong>primo equipaggiamento</strong> (montati in fabbrica). Altre misure possono essere omologate separatamente tramite perizia cantonale. Consultate sempre un professionista o il servizio della circolazione del vostro cantone prima di montare pneumatici fuori specifica originale.'],
+            ['cat' => 'wheels', 'question' => 'Il mio veicolo ha 4 fori ma il cerchio ne ha 5, è compatibile?', 'answer' => 'No, il numero di fori di fissaggio deve essere <strong>strettamente identico</strong> tra cerchio e mozzo. Non esiste alcun adattatore legale per passare da 4 a 5 fori in Svizzera. Il montaggio di tale combinazione comporterebbe il fallimento del collaudo e costituisce un grave pericolo per la sicurezza stradale.'],
+            ['cat' => 'pricing', 'question' => 'Che cos\'è un "token web" e come funziona?', 'answer' => 'I <strong>token web</strong> sono un\'unità di pagamento a consumo (pay-as-you-go) per accedere ai dati premium senza abbonamento mensile. 1 token = 1 consultazione completa della scheda o 1 esportazione PDF. I token sono acquistabili a pacchetti dal vostro spazio personale e non scadono mai. Ideale per utenti occasionali.'],
+            ['cat' => 'pricing', 'question' => 'I dati di base sono davvero gratuiti?', 'answer' => 'Sì. Senza registrazione, ogni utente può consultare <strong>10 schede al mese</strong> con i dati di motorizzazione ed emissioni. I dati di massa (peso) e cerchi/pneumatici richiedono un token o un abbonamento a partire dal livello Starter (9 CHF/mese). La creazione di un account gratuito è senza carta di credito.'],
+            ['cat' => 'pricing', 'question' => 'Esiste un\'offerta per garagisti e professionisti?', 'answer' => 'Sì. Le nostre offerte <strong>Business (199 CHF/mese)</strong> e <strong>Business+ (399 CHF/mese)</strong> sono concepite per i professionisti con volumi elevati (da 5 000 a 15 000 schede/mese), accesso all\'esportazione CSV in massa e gestione multi-utente. Per esigenze >15 000 schede/mese o un\'integrazione white-label, contattateci per un preventivo Enterprise.'],
+            ['cat' => 'account', 'question' => 'Come funziona l\'API REST?', 'answer' => 'L\'API REST è disponibile dal livello <strong>Pro (49 CHF/mese)</strong>. Permette di interrogare i nostri dati direttamente dalla vostra applicazione tramite chiamate HTTP. Autenticazione tramite <strong>Bearer Token (Laravel Sanctum)</strong>. Documentazione interattiva disponibile su <code>/api/docs</code>. Ogni chiamata consuma 1 credito API incluso nella vostra quota mensile.'],
+            ['cat' => 'account', 'question' => 'I miei dati personali sono protetti?', 'answer' => 'Sì. reception-par-type.ch è <strong>ospitato in Svizzera</strong> e conforme alla <strong>LPD (Legge federale sulla protezione dei dati)</strong> e al GDPR europeo. I vostri dati non vengono mai venduti a terzi. Potete richiedere la cancellazione completa del vostro account e dei vostri dati in qualsiasi momento dal vostro spazio personale.'],
+        ],
+    ],
+    'guide' => [
+        'page_title'       => 'Guida all\'uso',
+        'page_description' => 'Guida completa per trovare il numero TG, comprendere i dati ASTRA e sfruttare al meglio reception-par-type.ch.',
+        'nav_title'        => 'In questa guida',
+        'reading_time'     => 'Lettura: 4 min',
+        'steps' => [
+            ['id' => 'trovare-tg',    'number' => '01', 'title' => 'Trovare il numero TG sul permesso di circolazione', 'subtitle' => 'Casella 24 del permesso svizzero'],
+            ['id' => 'risultati',     'number' => '02', 'title' => 'Capire e sbloccare i risultati', 'subtitle' => 'Dati gratuiti vs. avanzati'],
+            ['id' => 'esporta-api',   'number' => '03', 'title' => 'Esportare il PDF e usare l\'API', 'subtitle' => 'Per professionisti e sviluppatori'],
+        ],
+        'step1' => [
+            'body'          => 'Il numero di omologazione per tipo (<strong>TG</strong>) si trova alla <strong>casella 24</strong> del permesso di circolazione svizzero ("N. di omologazione per tipo"). È strutturato in 5 gruppi separati da punti.',
+            'format_title'  => 'Formato del numero TG',
+            'format_example'=> '27.012.000.08.00004',
+            'format_parts'  => [
+                ['label' => '27', 'desc' => 'Codice paese (27 = Svizzera)'],
+                ['label' => '012', 'desc' => 'Categoria veicolo'],
+                ['label' => '000', 'desc' => 'Numero costruttore'],
+                ['label' => '08', 'desc' => 'Anno omologazione'],
+                ['label' => '00004', 'desc' => 'Numero variante'],
+            ],
+            'tip'  => 'Suggerimento: sul permesso in tedesco cercare "Typengenehmigungsnummer". In francese: "N° de réception par type".',
+            'note' => 'I veicoli più vecchi (prima del 1995) possono avere un formato diverso. Il motore di ricerca accetta formati normalizzati e storici.',
+        ],
+        'step2' => [
+            'body'          => 'I risultati sono organizzati in schede tematiche. I dati di motorizzazione ed emissioni sono accessibili gratuitamente. I dati di massa e cerchi richiedono un abbonamento o un token.',
+            'free_title'    => 'Dati gratuiti',
+            'premium_title' => 'Dati avanzati (abbonamento o token)',
+            'free_items'    => ['Marca, modello, variante', 'Tipo di carburante e motorizzazione', 'Potenza (kW / CV)', 'Cilindrata', 'Cambio', 'CO₂ e norma Euro'],
+            'premium_items' => ['Tara e MTA', 'Massa rimorchiabile', 'PCD, centraggio, offset ET', 'Pneumatici di primo impianto', 'Esportazione PDF ufficiale', 'Accesso API REST'],
+            'tip'           => 'Lo sblocco singolo (2 CHF / scheda) non richiede abbonamento. Basta creare un account gratuito e ricaricare il saldo token.',
+        ],
+        'step3' => [
+            'body'        => 'Gli abbonati Pro e superiori possono esportare ogni scheda in formato PDF ufficiale o interrogare la nostra API REST.',
+            'pdf_title'   => 'Esportazione PDF',
+            'pdf_steps'   => ['Aprire la scheda tecnica del veicolo', 'Cliccare su "Esporta PDF" (in alto a destra)', 'Il PDF include tutti i dati omologati + timbro ASTRA', 'Disponibile in IT, FR, DE e EN'],
+            'api_title'   => 'API REST',
+            'api_endpoint'=> 'GET /api/v1/vehicles/{numero_tg}',
+            'api_example' => "{\n  \"numero_tg\": \"27.012.000.08.00004\",\n  \"marque\": \"Volkswagen\",\n  \"puissance_kw\": 110,\n  ...\n}",
+            'api_tip'     => 'Il token Bearer API si trova in Account → Impostazioni → API.',
+        ],
+    ],
+];

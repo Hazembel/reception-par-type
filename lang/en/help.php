@@ -1,0 +1,92 @@
+<?php
+/**
+ * Translations EN — Module 4
+ * resources/lang/en/help.php
+ */
+return [
+    'tooltip' => [
+        'numero_tg'         => 'Type Approval Number (TG / Typengenehmigung): unique identifier assigned by ASTRA when a vehicle model is approved for use in Switzerland. Found in <strong>box 24</strong> of the Swiss vehicle registration document.',
+        'entraxe'           => 'Bolt Circle Diameter (BCD/PCD): distance in mm between the centres of two opposing bolt holes. E.g. 5×112 = 5 bolts on a 112 mm circle.',
+        'alesage'           => 'Hub bore: inner diameter of the central hole in the wheel (mm). Must match the vehicle hub diameter exactly for safe centring.',
+        'deport_et'         => 'Offset (ET): distance in mm between the wheel mounting face and its centreline. Positive ET (e.g. +45) moves the wheel inward; negative ET moves it outward.',
+        'poids_remorquable' => 'Maximum braked trailer mass: the heaviest trailer the vehicle is approved to tow with its brakes engaged.',
+        'poids_vide'        => 'Kerb weight: vehicle mass as homologated by ASTRA, including all operating fluids, without passengers or cargo.',
+        'poids_total'       => 'Gross Vehicle Weight (GVW): maximum permissible mass of the fully loaded vehicle (vehicle + passengers + luggage). Must not be exceeded.',
+        'co2'               => 'CO₂ emissions in g/km measured under WLTP (since 2018) or NEDC. Used to calculate cantonal vehicle tax in Switzerland.',
+        'code_emissions'    => 'European emission standard (Euro 1–6). Determines cantonal taxes and eligibility for low-emission zone access.',
+        'puissance_kw'      => 'Maximum engine output in kilowatts (kW). 1 kW ≈ 1.36 hp. Legal unit for Swiss vehicle registration.',
+        'cylindree'         => 'Engine displacement in cm³. Relevant for vehicle taxation in some Swiss cantons.',
+        'boite_vitesse'     => 'Transmission type: M = Manual, A = Automatic, CVT = Continuously variable, DSG/PDK = Dual-clutch automated.',
+        'pneus_origine'     => 'OEM tyre size fitted at the factory. Format: Width/Aspect-ratio R Rim Diameter Load-index Speed-rating (e.g. 205/55 R16 91H).',
+        'nb_trous'          => 'Number of wheel bolt holes (typically 4 or 5 for passenger cars). Must match the number of wheel studs on the hub exactly.',
+        'slug'              => 'Automatically generated unique URL identifier for SEO. Derived from the make, model and TG number.',
+    ],
+    'faq' => [
+        'page_title'        => 'Frequently Asked Questions',
+        'page_description'  => 'Everything you need to know about ASTRA data, type approval numbers (TG), wheels, and our service.',
+        'search_placeholder'=> 'Search a question…',
+        'no_results'        => 'No questions match your search.',
+        'categories' => [
+            'general' => 'General & Type Approval',
+            'wheels'  => 'Tyres & Wheels',
+            'pricing' => 'Pricing & Tokens',
+            'account' => 'Account & API',
+        ],
+        'questions' => [
+            ['cat' => 'general', 'question' => 'What is the type approval number (TG)?', 'answer' => 'The type approval number (TG) is ASTRA\'s official identifier for the approval of a vehicle type in Switzerland. It appears in <strong>field 24</strong> of the vehicle registration document. Example: <code>27.012.000.08.00004</code>.'],
+            ['cat' => 'general', 'question' => 'Is the data official and up to date?', 'answer' => 'Yes. Our data comes directly from <strong>ASTRA\'s TARGA files</strong>. The main file is updated monthly (on the 10th), and new approvals are integrated weekly via the ASTRA newsletter.'],
+            ['cat' => 'general', 'question' => 'Can I search with a full VIN?', 'answer' => 'Yes. You can enter the full 17-character VIN from your registration document — the system automatically truncates it to the first 9 characters to query the index efficiently.'],
+            ['cat' => 'general', 'question' => 'Which vehicle types are covered?', 'answer' => 'Passenger cars, motorcycles and trailers type-approved in Switzerland. Data is imported from the separate ASTRA files (TG-Automobil, TG-Moto, TG-Anhänger) and the emissions file.'],
+            ['cat' => 'wheels', 'question' => 'How do I read the wheel data (PCD, hub bore, ET)?', 'answer' => '<ul><li><strong>Bolt pattern (PCD)</strong>: number of holes × diameter in mm (e.g. 5×112).</li><li><strong>Hub bore</strong>: centre bore in mm (e.g. 57.1).</li><li><strong>Offset ET</strong>: in mm, positive or negative. Tolerance approx. ±10 mm, check cantonal MFK rules.</li></ul>'],
+            ['cat' => 'wheels', 'question' => 'Are the displayed tyre sizes the only approved ones?', 'answer' => 'ASTRA data indicates the <strong>original equipment</strong> tyres (factory-fitted). Other sizes may be approved separately via a cantonal assessment. Always consult a professional or your cantonal road traffic office before fitting tyres outside the original specification.'],
+            ['cat' => 'wheels', 'question' => 'My vehicle has 4 holes but my wheel has 5, is it compatible?', 'answer' => 'No, the number of mounting holes must be <strong>strictly identical</strong> between the wheel and the hub. There is no legal adapter to go from 4 to 5 holes in Switzerland. Fitting such a combination would fail the technical inspection and poses a serious road safety hazard.'],
+            ['cat' => 'pricing', 'question' => 'What is a "web token" and how does it work?', 'answer' => '<strong>Web tokens</strong> are a pay-as-you-go payment unit for accessing premium data without a monthly subscription. 1 token = 1 full vehicle lookup or 1 PDF export. Tokens can be purchased in packs from your personal area and never expire. Ideal for occasional users.'],
+            ['cat' => 'pricing', 'question' => 'Is the basic data really free?', 'answer' => 'Yes. Without registration, each user can view <strong>10 data sheets per month</strong> with engine and emissions data. Weight (mass) and wheel/tyre data require a token or a subscription from the Starter level (9 CHF/month). Creating a free account requires no credit card.'],
+            ['cat' => 'pricing', 'question' => 'Is there an offer for garages and professionals?', 'answer' => 'Yes. Our <strong>Business (199 CHF/month)</strong> and <strong>Business+ (399 CHF/month)</strong> plans are designed for professionals with high volumes (5,000 to 15,000 sheets/month), bulk CSV export access, and multi-user management. For needs >15,000 sheets/month or white-label integration, contact us for an Enterprise quote.'],
+            ['cat' => 'account', 'question' => 'How does the REST API work?', 'answer' => 'The REST API is available from the <strong>Pro level (49 CHF/month)</strong>. It lets you query our data directly from your application via HTTP calls. Authentication via <strong>Bearer Token (Laravel Sanctum)</strong>. Interactive documentation available at <code>/api/docs</code>. Each call consumes 1 API credit included in your monthly quota.'],
+            ['cat' => 'account', 'question' => 'Is my personal data protected?', 'answer' => 'Yes. reception-par-type.ch is <strong>hosted in Switzerland</strong> and compliant with the <strong>FADP (Federal Act on Data Protection)</strong> and the European GDPR. Your data is never sold to third parties. You can request the complete deletion of your account and data at any time from your personal area.'],
+        ],
+    ],
+    'guide' => [
+        'page_title'       => 'User Guide',
+        'page_description' => 'Step-by-step guide to finding your TG number, understanding ASTRA data, and getting the most from reception-par-type.ch.',
+        'nav_title'        => 'In this guide',
+        'reading_time'     => 'Reading time: 4 min',
+        'steps' => [
+            ['id' => 'find-tg',   'number' => '01', 'title' => 'Find the TG number on your registration document', 'subtitle' => 'Box 24 of the Swiss vehicle registration'],
+            ['id' => 'results',   'number' => '02', 'title' => 'Understand and unlock the results', 'subtitle' => 'Free data vs. advanced data'],
+            ['id' => 'export-api','number' => '03', 'title' => 'Export the PDF report and use the API', 'subtitle' => 'For professionals and developers'],
+        ],
+        'step1' => [
+            'body'          => 'The type approval number (<strong>TG</strong>) is printed on the Swiss vehicle registration document in <strong>box 24</strong> ("Type approval number"). It consists of 5 groups separated by dots.',
+            'format_title'  => 'TG number format',
+            'format_example'=> '27.012.000.08.00004',
+            'format_parts'  => [
+                ['label' => '27', 'desc' => 'Country code (27 = Switzerland)'],
+                ['label' => '012', 'desc' => 'Vehicle category'],
+                ['label' => '000', 'desc' => 'Manufacturer number'],
+                ['label' => '08', 'desc' => 'Year of approval'],
+                ['label' => '00004', 'desc' => 'Variant number'],
+            ],
+            'tip'  => 'Tip: on a German-language document look for "Typengenehmigungsnummer". In French: "N° de réception par type". In Italian: "N. di omologazione per tipo".',
+            'note' => 'Older vehicles (pre-1995) may have a different format. Our search engine accepts both normalised and legacy formats.',
+        ],
+        'step2' => [
+            'body'          => 'Search results are organised in themed cards. Engine and emission data are freely accessible. Mass and wheel/tyre data require a subscription or a token.',
+            'free_title'    => 'Free data (no account needed)',
+            'premium_title' => 'Advanced data (subscription or token)',
+            'free_items'    => ['Make, model, variant', 'Fuel type and engine specs', 'Power output (kW / hp)', 'Engine displacement', 'Transmission type', 'CO₂ emissions and Euro standard'],
+            'premium_items' => ['Kerb weight and GVW', 'Towing capacity', 'BCD, hub bore, offset ET', 'OEM tyre sizes', 'Official PDF export', 'REST API access'],
+            'tip'           => 'Single unlock (CHF 2 / sheet) requires no subscription — just a free account with token credit.',
+        ],
+        'step3' => [
+            'body'        => 'Pro subscribers and above can export any data sheet as an official PDF, or query our REST API to integrate data into their own tools.',
+            'pdf_title'   => 'PDF export',
+            'pdf_steps'   => ['Open the desired vehicle data sheet', 'Click "Export as PDF" (top right)', 'The PDF includes all approved data + ASTRA stamp', 'Available in EN, FR, DE and IT'],
+            'api_title'   => 'REST API',
+            'api_endpoint'=> 'GET /api/v1/vehicles/{numero_tg}',
+            'api_example' => "{\n  \"numero_tg\": \"27.012.000.08.00004\",\n  \"make\": \"Volkswagen\",\n  \"power_kw\": 110,\n  ...\n}",
+            'api_tip'     => 'Your Bearer API token is available under Account → Settings → API.',
+        ],
+    ],
+];
