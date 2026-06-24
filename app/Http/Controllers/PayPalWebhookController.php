@@ -69,10 +69,15 @@ class PayPalWebhookController extends Controller
     {
         $resource      = $payload['resource'] ?? [];
         $supplementary = $resource['supplementary_data'] ?? [];
-        $orderId       = $supplementary['related_ids']['order_id'] ?? $resource['id'] ?? null;
+        $orderId       = $supplementary['related_ids']['order_id'] ?? null;
 
         if (!$orderId) {
-            Log::warning('PayPal webhook: order_id manquant');
+            // Never fall back to resource.id — that is the capture ID, not the order ID.
+            // Returning here forces PayPal to retry; log enough detail for manual triage.
+            Log::error('PayPal webhook: order_id absent de supplementary_data', [
+                'resource_id' => $resource['id'] ?? null,
+                'event_type'  => $payload['event_type'] ?? null,
+            ]);
             return;
         }
 
@@ -155,8 +160,17 @@ class PayPalWebhookController extends Controller
      */
     private function handleRefunded(array $payload): void
     {
-        $orderId = $payload['resource']['id'] ?? null;
-        if (!$orderId) return;
+        $resource = $payload['resource'] ?? [];
+        // For CAPTURE.REFUNDED, resource.id is the CAPTURE ID — not the order ID.
+        // The order ID lives in supplementary_data, same as CAPTURE.COMPLETED.
+        $orderId = $resource['supplementary_data']['related_ids']['order_id'] ?? null;
+
+        if (!$orderId) {
+            Log::error('PayPal refund: order_id introuvable dans supplementary_data', [
+                'capture_id' => $resource['id'] ?? null,
+            ]);
+            return;
+        }
 
         \App\Models\AffiliateEarning::where('paypal_order_id', $orderId)
             ->whereIn('status', ['pending', 'approved'])
@@ -214,11 +228,18 @@ class PayPalWebhookController extends Controller
         $sigBytes  = base64_decode($signature);
 
         try {
-            // Récupération du certificat PayPal (mis en cache 24h)
+            // Fetch and cache the PayPal cert for 24h.
+            // Throwing inside the callback prevents caching a failed fetch (false).
             $certPem = \Illuminate\Support\Facades\Cache::remember(
                 'paypal_cert:' . md5($certUrl),
                 86400,
-                fn() => file_get_contents($certUrl)
+                function () use ($certUrl) {
+                    $pem = @file_get_contents($certUrl);
+                    if ($pem === false) {
+                        throw new \RuntimeException("PayPal cert fetch failed: {$certUrl}");
+                    }
+                    return $pem;
+                }
             );
 
             $pubKey = openssl_pkey_get_public($certPem);

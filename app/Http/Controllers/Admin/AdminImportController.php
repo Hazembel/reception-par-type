@@ -8,6 +8,7 @@ use App\Jobs\ImportAstraNewsletterJob;
 use App\Models\ImportLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -32,26 +33,27 @@ class AdminImportController extends BaseController
     {
         // Récupération des 50 derniers imports pour le tableau de bord
         $recentImports = ImportLog::orderByDesc('created_at')
-            ->limit(50)
-            ->get();
+            ->paginate(50);
 
-        // Statistiques globales
-        $stats = [
-            'total_2000'     => ImportLog::where('import_type', '2000')->count(),
-            'total_5000'     => ImportLog::where('import_type', '5000')->count(),
-            'last_2000'      => ImportLog::where('import_type', '2000')
-                ->completed()
-                ->latest('created_at')
-                ->first(),
-            'last_5000'      => ImportLog::where('import_type', '5000')
-                ->completed()
-                ->latest('created_at')
-                ->first(),
-            'running_jobs'   => ImportLog::where('status', 'running')->count(),
-            'failed_recent'  => ImportLog::where('status', 'failed')
-                ->where('created_at', '>=', now()->subDays(7))
-                ->count(),
-        ];
+        // Statistiques globales (cached 5 min — counters change infrequently)
+        $stats = Cache::remember('admin_import_stats', 300, function () {
+            return [
+                'total_2000'    => ImportLog::where('import_type', '2000')->count(),
+                'total_5000'    => ImportLog::where('import_type', '5000')->count(),
+                'last_2000'     => ImportLog::where('import_type', '2000')
+                    ->completed()
+                    ->latest('created_at')
+                    ->first(),
+                'last_5000'     => ImportLog::where('import_type', '5000')
+                    ->completed()
+                    ->latest('created_at')
+                    ->first(),
+                'running_jobs'  => ImportLog::where('status', 'running')->count(),
+                'failed_recent' => ImportLog::where('status', 'failed')
+                    ->where('created_at', '>=', now()->subDays(7))
+                    ->count(),
+            ];
+        });
 
         // Vérification de l'état des fichiers ASTRA sur disque
         $diskStatus = $this->checkDiskStatus();
@@ -133,6 +135,8 @@ class AdminImportController extends BaseController
 
             $message = "✅ Import newsletter (5000) déclenché manuellement.";
         }
+
+        Cache::forget('admin_import_stats');
 
         return redirect()
             ->route('admin.import.index')

@@ -35,9 +35,9 @@
                 @csrf
                 <div class="ps-form-group">
                     <label class="ps-label">Type d'import</label>
-                    <select name="type" class="ps-select">
-                        <option value="newsletter">Newsletter 5000 (hebdomadaire, rapide)</option>
-                        <option value="main">Fichier principal 2000 (mensuel, 1-3 h)</option>
+                    <select name="import_type" class="ps-select">
+                        <option value="5000">Newsletter 5000 (hebdomadaire, rapide)</option>
+                        <option value="2000">Fichier principal 2000 (mensuel, 1-3 h)</option>
                     </select>
                 </div>
                 <label class="ps-check" style="margin-bottom:14px">

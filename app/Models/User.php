@@ -36,6 +36,10 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use SoftDeletes;   // Soft delete pour conformité RGPD et audit
 
+    // ── Constantes Freemium ───────────────────────────────────────────────────
+    public const ADMIN_LEVEL = 8;
+    public const FREE_LEVEL  = 1;
+
     // ── Configuration Eloquent ────────────────────────────────────────────────
 
     /**
@@ -100,7 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isAdmin(): bool
     {
-        return $this->subscription_level === 8;
+        return $this->subscription_level === self::ADMIN_LEVEL;
     }
 
     /**

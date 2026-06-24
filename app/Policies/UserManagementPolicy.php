@@ -18,7 +18,7 @@ class UserManagementPolicy
      */
     public function viewAny(User $admin): bool
     {
-        return $admin->subscription_level === 8;
+        return $admin->isAdmin();
     }
 
     /**
@@ -26,19 +26,17 @@ class UserManagementPolicy
      */
     public function grantAccess(User $admin, User $target): bool
     {
-        // Seul un admin peut modifier d'autres utilisateurs
-        if ($admin->subscription_level !== 8) {
+        if (!$admin->isAdmin()) {
             return false;
         }
 
         // Un admin ne peut pas modifier son propre compte depuis cette interface
-        // (protection contre l'escalade accidentelle ou forcée)
         if ($admin->id === $target->id) {
             return false;
         }
 
         // Un admin ne peut pas rétrograder un autre admin
-        if ($target->subscription_level === 8) {
+        if ($target->isAdmin()) {
             return false;
         }
 
@@ -50,7 +48,7 @@ class UserManagementPolicy
      */
     public function viewDashboard(User $admin): bool
     {
-        return $admin->subscription_level === 8;
+        return $admin->isAdmin();
     }
 
     /**
@@ -62,6 +60,6 @@ class UserManagementPolicy
      */
     public function managePricing(User $admin): bool
     {
-        return $admin->subscription_level === 8;
+        return $admin->isAdmin();
     }
 }

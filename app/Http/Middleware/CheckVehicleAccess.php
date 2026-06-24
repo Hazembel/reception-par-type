@@ -184,7 +184,8 @@ class CheckVehicleAccess
             $request->attributes->set('vehicle_access', 'blocked');
             $request->attributes->set('can_view_advanced', false);
             $request->attributes->set('access_reason', 'insufficient_tokens');
-            $request->attributes->set('tokens_balance', $user->fresh()->web_tokens_balance);
+            // No DB write occurred — in-memory balance is still authoritative.
+            $request->attributes->set('tokens_balance', $user->web_tokens_balance);
             return $next($request);
         }
 
@@ -204,26 +205,31 @@ class CheckVehicleAccess
      */
     private function handleProQuota(Request $request, Closure $next, $user): Response
     {
-        $limit   = config('freemium.monthly_limits.4', self::PRO_MONTHLY_LIMIT);
-        $counter = (int) $user->web_monthly_counter;
+        $limit = config('freemium.monthly_limits.4', self::PRO_MONTHLY_LIMIT);
 
-        if ($counter >= $limit) {
-            // Quota mensuel épuisé
+        // Single atomic conditional increment: the WHERE guard closes the race window
+        // where two concurrent requests could both read counter < limit and both pass.
+        $affected = DB::table('users')
+            ->where('id', $user->id)
+            ->where('web_monthly_counter', '<', $limit)
+            ->increment('web_monthly_counter');
+
+        if ($affected === 0) {
+            // Quota épuisé (or concurrent request consumed the last slot)
             $request->attributes->set('vehicle_access', 'blocked');
             $request->attributes->set('can_view_advanced', false);
             $request->attributes->set('access_reason', 'pro_quota_exceeded');
             $request->attributes->set('monthly_limit', $limit);
-            $request->attributes->set('monthly_counter', $counter);
+            $request->attributes->set('monthly_counter', (int) $user->web_monthly_counter);
             return $next($request);
         }
 
-        // Incrémentation du compteur
-        $user->incrementMonthlyCounter();
+        $newCounter = $user->web_monthly_counter + 1;
 
         $request->attributes->set('vehicle_access', 'full');
         $request->attributes->set('can_view_advanced', true);
         $request->attributes->set('access_reason', 'pro_quota_ok');
-        $request->attributes->set('monthly_remaining', $limit - $counter - 1);
+        $request->attributes->set('monthly_remaining', $limit - $newCounter);
 
         return $next($request);
     }

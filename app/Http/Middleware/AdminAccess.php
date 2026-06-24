@@ -29,8 +29,7 @@ class AdminAccess
                 ->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
 
-        // Vérification du niveau admin (subscription_level = 8)
-        if ($user->subscription_level < 8) {
+        if (!$user->isAdmin()) {
             abort(403, 'Accès réservé aux administrateurs de la plateforme.');
         }
 

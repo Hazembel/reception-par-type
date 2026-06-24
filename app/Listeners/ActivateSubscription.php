@@ -34,11 +34,16 @@ class ActivateSubscription implements ShouldQueue
     public function handle(PaymentSucceeded $event): void
     {
         if (!$event->buyer) {
-            // Acheteur introuvable (e-mail PayPal ≠ e-mail du compte).
-            // On loggue pour traitement manuel — la facture est quand même générée.
-            Log::warning('PaymentSucceeded sans acheteur identifié', [
+            // Payment claimed but buyer not found — money taken, account not upgraded.
+            // Log at critical level so production alerting fires. Manual resolution required.
+            Log::critical('PAYMENT LOSS: PaymentSucceeded — acheteur introuvable, abonnement non activé', [
                 'order_id'    => $event->orderId,
                 'payer_email' => $event->payerEmail,
+                'amount_cts'  => $event->amountCts ?? null,
+                'custom_id'   => $event->paypalPayload['custom_id']
+                    ?? $event->paypalPayload['purchase_units'][0]['custom_id']
+                    ?? null,
+                'action'      => 'Manual lookup required: find user by payer_email, apply subscription manually.',
             ]);
             return;
         }
@@ -97,9 +102,7 @@ class ActivateSubscription implements ShouldQueue
      */
     private function creditTokens(PaymentSucceeded $event, int $tokens): void
     {
-        \DB::table('users')
-            ->where('id', $event->buyer->id)
-            ->increment('web_tokens_balance', $tokens);
+        $event->buyer->increment('web_tokens_balance', $tokens);
 
         Log::info('Jetons crédités', [
             'user_id' => $event->buyer->id,

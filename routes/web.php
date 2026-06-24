@@ -70,7 +70,7 @@ Route::prefix('{locale}')
 
         // ── Checkout PayPal (Module 9 — lit le cookie affilié) ────────────────
         Route::post('/checkout/create-order', [CheckoutController::class, 'createOrder'])
-            ->middleware(['auth'])
+            ->middleware(['auth', 'throttle:10,1'])
             ->name('checkout.create-order');
 
         // ── Espace compte (Module 9) ──────────────────────────────────────────

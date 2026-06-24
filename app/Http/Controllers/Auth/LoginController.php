@@ -31,9 +31,8 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            // Check if user is admin (level 8)
             $user = Auth::user();
-            if ($user->subscription_level === 8) {
+            if ($user->isAdmin()) {
                 return redirect()->route('admin.dashboard');
             }
 

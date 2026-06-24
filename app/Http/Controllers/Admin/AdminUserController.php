@@ -69,7 +69,7 @@ class AdminUserController extends BaseController
             'active'   => User::where('subscribed_until', '>', now())->count(),
         ];
 
-        $plans = PricingPlan::ordered()->get()->keyBy('level');
+        $plans = PricingPlan::allCached()->keyBy('level');
 
         return $this->renderView(
             'admin.users.index',
@@ -87,7 +87,7 @@ class AdminUserController extends BaseController
     {
         $this->authorize('grantAccess', $user);
 
-        $plans = PricingPlan::ordered()->get();
+        $plans = PricingPlan::allCached();
 
         // Historique des imports déverrouillés ce mois-ci
         $unlockedCount = \App\Models\UserUnlockedVehicle::where('user_id', $user->id)
