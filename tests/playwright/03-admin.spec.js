@@ -10,8 +10,8 @@ test.beforeEach(async ({ page }) => {
 test.describe('Admin dashboard', () => {
     test('loads without error', async ({ page }) => {
         await page.goto('/admin/dashboard');
+        // Check for Laravel error page only — "500" appears legitimately in content (quotas etc.)
         await expect(page.locator('body')).not.toContainText('Whoops');
-        await expect(page.locator('body')).not.toContainText('500');
         await expect(page).toHaveURL(/\/admin\/dashboard/);
     });
 
@@ -33,11 +33,13 @@ test.describe('Admin users list', () => {
 
     test('search by email filters results', async ({ page }) => {
         await page.goto('/admin/users');
-        const searchInput = page.locator('input[name="q"]');
+        // Use ps-input class to target the filter form input (not the global nav search)
+        const searchInput = page.locator('input.ps-input[name="q"]');
         await expect(searchInput).toBeVisible();
         await searchInput.fill('admin');
-        await page.keyboard.press('Enter');
-        await expect(page).toHaveURL(/\?q=admin/);
+        // Use text to avoid matching the global nav search button
+        await page.getByRole('button', { name: 'Rechercher' }).click();
+        await expect(page).toHaveURL(/[?&]q=admin/);
         await expect(page.locator('body')).not.toContainText('Whoops');
     });
 
@@ -70,8 +72,8 @@ test.describe('Admin user detail', () => {
 test.describe('Admin import', () => {
     test('import dashboard loads', async ({ page }) => {
         await page.goto('/admin/import');
+        // "5000" and "2000" appear in content legitimately — only check for error page
         await expect(page.locator('body')).not.toContainText('Whoops');
-        await expect(page.locator('body')).not.toContainText('500');
     });
 
     test('import form has correct field names', async ({ page }) => {
@@ -112,10 +114,13 @@ test.describe('Admin affiliates', () => {
 });
 
 test.describe('Non-admin blocked from admin', () => {
-    test('/admin/* returns 403 for unauthenticated', async ({ page }) => {
-        // Log out first
-        await page.locator('form[action*="logout"] button[type=submit]').click();
-        await page.waitForURL(/^http:\/\/localhost:8000\/(fr|de|it|en)?\/?$/);
+    test('/admin/* redirects unauthenticated users to login', async ({ page }) => {
+        // Log out using the admin layout's hidden form
+        await page.evaluate(() => {
+            const form = document.getElementById('ps-logout-form');
+            if (form) form.submit();
+        });
+        await page.waitForURL(/^http:\/\/localhost:8000\/(fr|de|it|en)?\/?$/, { timeout: 8_000 });
 
         await page.goto('/admin/dashboard');
         await expect(page).toHaveURL(/\/login/);

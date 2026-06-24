@@ -55,11 +55,14 @@ test.describe('Admin login', () => {
 });
 
 test.describe('Logout', () => {
-    test('logout button ends session and redirects to /', async ({ page }) => {
+    test('logout ends session and redirects to /', async ({ page }) => {
         await loginAsAdmin(page);
 
-        // Submit the logout form
-        await page.locator('form[action*="logout"] button[type=submit]').click();
+        // Admin layout uses a link that submits a hidden form (#ps-logout-form)
+        await page.evaluate(() => {
+            const form = document.getElementById('ps-logout-form');
+            if (form) form.submit();
+        });
 
         // Should land somewhere public (root redirect)
         await page.waitForURL(/^http:\/\/localhost:8000\/(fr|de|it|en)?\/?$/, { timeout: 8_000 });
