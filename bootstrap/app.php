@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\AdminAccess;
 use App\Http\Middleware\CheckVehicleAccess;
@@ -33,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // ── Alias de middlewares (tous modules) ───────────────────────────────
         $middleware->alias([
+            'auth'           => Authenticate::class,         // Overridden: redirects to /{locale}/login
             'setlocale'      => SetLocale::class,            // Module 1 — locale stricte (HTTP 400)
             'admin'          => AdminAccess::class,          // Module 2 — accès admin (niveau 8)
             'vehicle.access' => CheckVehicleAccess::class,   // Module 5 — matrice freemium + anti-cloaking

@@ -3,9 +3,13 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "test": "playwright test",
+        "test:ui": "playwright test --ui",
+        "test:report": "playwright show-report"
     },
     "devDependencies": {
+        "@playwright/test": "^1.61.1",
         "@tailwindcss/forms": "^0.5.7",
         "autoprefixer": "^10.4.19",
         "axios": "^1.7.4",
@@ -15,8 +19,8 @@
         "vite": "^5.4.0"
     },
     "dependencies": {
-        "alpinejs": "^3.14.1",
         "@alpinejs/collapse": "^3.14.1",
-        "@alpinejs/focus": "^3.14.1"
+        "@alpinejs/focus": "^3.14.1",
+        "alpinejs": "^3.14.1"
     }
 }

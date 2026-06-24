@@ -317,7 +317,7 @@
             </div>
 
             {{-- Code animé --}}
-            <div class="relative" x-data="apiDemo()" x-init="startTyping()">
+            <div class="relative" x-data="apiDemo()">
                 <div class="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
                     {{-- Barre de titre du terminal --}}
                     <div class="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/5">
