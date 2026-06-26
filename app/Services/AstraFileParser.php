@@ -198,11 +198,11 @@ class AstraFileParser
      */
     public static function parseLine(array $headers, array $values): ?array
     {
-        $raw = @array_combine($headers, $values);
-        if ($raw === false) {
-            // Nombre de colonnes ≠ nombre d'en-têtes : ligne corrompue.
+        // PHP 8.0+ throws ValueError (not false) on count mismatch — check first
+        if (count($headers) !== count($values)) {
             return null;
         }
+        $raw = array_combine($headers, $values);
 
         $mapped = [];
         foreach (self::COLUMN_MAP as $astraCol => $vehicleField) {
@@ -250,10 +250,10 @@ class AstraFileParser
      */
     public static function parseEmissionLine(array $headers, array $values): ?array
     {
-        $raw = @array_combine($headers, $values);
-        if ($raw === false) {
+        if (count($headers) !== count($values)) {
             return null;
         }
+        $raw = array_combine($headers, $values);
 
         $mapped = [];
         foreach (self::EMISSIONS_COLUMN_MAP as $col => $field) {

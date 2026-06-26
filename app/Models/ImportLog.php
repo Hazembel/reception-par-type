@@ -86,7 +86,7 @@ class ImportLog extends Model
         $this->update(array_merge([
             'status'           => $status,
             'finished_at'      => $finishedAt,
-            'duration_seconds' => $finishedAt->diffInSeconds($this->started_at),
+            'duration_seconds' => max(0, (int) $finishedAt->diffInSeconds($this->started_at)),
         ], $stats));
     }
 
@@ -99,7 +99,7 @@ class ImportLog extends Model
             'status'           => 'failed',
             'finished_at'      => $finishedAt,
             'duration_seconds' => $this->started_at
-                ? $finishedAt->diffInSeconds($this->started_at)
+                ? max(0, (int) $finishedAt->diffInSeconds($this->started_at))
                 : null,
             'error_message'    => $message,
             'error_details'    => !empty($details) ? array_slice($details, 0, 100) : null,
