@@ -36,93 +36,103 @@ class AstraFileParser
      */
     public const COLUMN_MAP = [
         // ── Identification ────────────────────────────────────────────────
-        'tg_nummer'               => 'numero_tg',
-        'tg-nummer'               => 'numero_tg',
-        'typengenehmigungsnummer' => 'numero_tg',
-        'n_reception'             => 'numero_tg',
+        'tg_nummer'                  => 'numero_tg',
+        'tg-nummer'                  => 'numero_tg',
+        'typengenehmigungsnummer'    => 'numero_tg',  // col 1 in ASTRA files
+        'n_reception'                => 'numero_tg',
 
         // ── VIN (préfixe) ─────────────────────────────────────────────────
-        // Le fichier ASTRA ne contient que le préfixe (WMI+VDS), jamais le VIN
-        // complet. On mappe vers vin_prefix ; la troncature/normalisation est
-        // appliquée dans parseLine() par double sécurité.
-        'vin'                     => 'vin_prefix',
-        'fahrgestellnummer'       => 'vin_prefix',
-        'vin_prefix'              => 'vin_prefix',
-        'wmi'                     => 'vin_prefix',
+        'vin'                        => 'vin_prefix',
+        'fahrgestellnummer'          => 'vin_prefix',
+        '12 fahrgestellnummer'       => 'vin_prefix',  // col 22 in ASTRA files
+        'vin_prefix'                 => 'vin_prefix',
+        'wmi'                        => 'vin_prefix',
 
         // ── Homologation européenne ───────────────────────────────────────
-        'eg_typengenehmigung'     => 'eu_type_approval',
-        'eu_typengenehmigung'     => 'eu_type_approval',
-        'ce_reception'            => 'eu_type_approval',
-        'eu_type_approval'        => 'eu_type_approval',
-        'homologation_eu'         => 'eu_type_approval',
+        'eg_typengenehmigung'        => 'eu_type_approval',
+        'eu_typengenehmigung'        => 'eu_type_approval',
+        'ce_reception'               => 'eu_type_approval',
+        'eu_type_approval'           => 'eu_type_approval',
+        'homologation_eu'            => 'eu_type_approval',
+        '09 eu-gesamtgenehmigung'    => 'eu_type_approval',  // col 18 in ASTRA files
 
         // ── Constructeur ──────────────────────────────────────────────────
-        'marke'                   => 'marque',
-        'marque'                  => 'marque',
-        'fabrikat'                => 'marque',
+        'marke'                      => 'marque',
+        '04 marke'                   => 'marque',  // col 11 in ASTRA files
+        'marque'                     => 'marque',
+        'fabrikat'                   => 'marque',
 
-        'typ'                     => 'modele',
-        'type'                    => 'modele',
-        'modell'                  => 'modele',
-        'modele'                  => 'modele',
+        'typ'                        => 'modele',
+        '04 typ'                     => 'modele',  // col 12 in ASTRA files
+        'type'                       => 'modele',
+        'modell'                     => 'modele',
+        'modele'                     => 'modele',
 
-        'variante'                => 'variante',
-        'ausführung'              => 'variante',
-        'version'                 => 'variante',
+        'variante'                   => 'variante',
+        '05 typ; variante/version'   => 'variante',  // col 13 in ASTRA files
+        'ausführung'                 => 'variante',
+        'version'                    => 'variante',
 
         // ── Motorisation ──────────────────────────────────────────────────
-        'antrieb'                 => 'energie',
-        'energie'                 => 'energie',
-        'kraftstoff'              => 'energie',
+        'antrieb'                    => 'energie',
+        'energie'                    => 'energie',
+        'kraftstoff'                 => 'energie',
+        '22 bauart treibstoff'       => 'energie',  // col 63 in ASTRA files
 
-        'leistung_kw'             => 'puissance_kw',
-        'puissance_kw'            => 'puissance_kw',
-        'nennleistung'            => 'puissance_kw',
+        'leistung_kw'                => 'puissance_kw',
+        'puissance_kw'               => 'puissance_kw',
+        'nennleistung'               => 'puissance_kw',
+        '24 leistung kw'             => 'puissance_kw',  // col 65 in ASTRA files
 
-        'hubraum'                 => 'cylindree',
-        'cylindree'               => 'cylindree',
+        'hubraum'                    => 'cylindree',
+        '23 hubraum'                 => 'cylindree',  // col 64 in ASTRA files
+        'cylindree'                  => 'cylindree',
 
-        'getriebe'                => 'boite_vitesse',
-        'boite'                   => 'boite_vitesse',
-        'transmission'            => 'boite_vitesse',
+        'getriebe'                   => 'boite_vitesse',
+        '15 getriebe 1'              => 'boite_vitesse',  // col 27 in ASTRA files
+        'boite'                      => 'boite_vitesse',
+        'transmission'               => 'boite_vitesse',
 
         // ── Masses ────────────────────────────────────────────────────────
-        'leergewicht'             => 'poids_vide',
-        'poids_vide'              => 'poids_vide',
+        'leergewicht'                => 'poids_vide',
+        '44 leergewicht von'         => 'poids_vide',  // col 145 in ASTRA files
+        'poids_vide'                 => 'poids_vide',
 
-        'gesamtgewicht'           => 'poids_total',
-        'pma'                     => 'poids_total',
-        'poids_total'             => 'poids_total',
+        'gesamtgewicht'              => 'poids_total',
+        '45 garantiegewicht von'     => 'poids_total',  // col 147 in ASTRA files
+        'pma'                        => 'poids_total',
+        'poids_total'                => 'poids_total',
 
-        'anhaengelast'            => 'poids_remorquable',
-        'charge_remorquable'      => 'poids_remorquable',
+        'anhaengelast'               => 'poids_remorquable',
+        '48 gebremst mech'           => 'poids_remorquable',  // col 166 in ASTRA files
+        'charge_remorquable'         => 'poids_remorquable',
 
         // ── Émissions (présentes aussi dans certains fichiers TG) ─────────
-        'co2'                     => 'co2',
-        'co2_emission'            => 'co2',
+        'co2'                        => 'co2',
+        'co2_emission'               => 'co2',
 
-        'abgasnorm'               => 'code_emissions',
-        'norme_emission'          => 'code_emissions',
-        'euro_norm'               => 'code_emissions',
+        'abgasnorm'                  => 'code_emissions',
+        'norme_emission'             => 'code_emissions',
+        'euro_norm'                  => 'code_emissions',
 
         // ── Roues ─────────────────────────────────────────────────────────
-        'lochzahl'                => 'nb_trous',
-        'nb_trous'                => 'nb_trous',
+        'lochzahl'                   => 'nb_trous',
+        'nb_trous'                   => 'nb_trous',
 
-        'lochkreis'               => 'entraxe',
-        'entraxe'                 => 'entraxe',
+        'lochkreis'                  => 'entraxe',
+        'entraxe'                    => 'entraxe',
 
-        'nabenbohrung'            => 'alesage',
-        'alesage'                 => 'alesage',
+        'nabenbohrung'               => 'alesage',
+        'alesage'                    => 'alesage',
 
-        'einpresstiefe'           => 'deport_et',
-        'et'                      => 'deport_et',
-        'offset'                  => 'deport_et',
+        'einpresstiefe'              => 'deport_et',
+        'et'                         => 'deport_et',
+        'offset'                     => 'deport_et',
 
-        'reifen'                  => 'pneus_origine',
-        'pneus'                   => 'pneus_origine',
-        'bereifung'               => 'pneus_origine',
+        'reifen'                     => 'pneus_origine',
+        '52 reifen felgen'           => 'pneus_origine',  // col 191 in ASTRA files
+        'pneus'                      => 'pneus_origine',
+        'bereifung'                  => 'pneus_origine',
     ];
 
     /**
@@ -198,9 +208,12 @@ class AstraFileParser
      */
     public static function parseLine(array $headers, array $values): ?array
     {
-        // PHP 8.0+ throws ValueError (not false) on count mismatch — check first
-        if (count($headers) !== count($values)) {
-            return null;
+        // ASTRA files omit trailing empty fields on short rows — pad to header count
+        if (count($values) > count($headers)) {
+            return null; // more values than headers = genuinely malformed
+        }
+        if (count($values) < count($headers)) {
+            $values = array_pad($values, count($headers), '');
         }
         $raw = array_combine($headers, $values);
 
@@ -250,8 +263,11 @@ class AstraFileParser
      */
     public static function parseEmissionLine(array $headers, array $values): ?array
     {
-        if (count($headers) !== count($values)) {
+        if (count($values) > count($headers)) {
             return null;
+        }
+        if (count($values) < count($headers)) {
+            $values = array_pad($values, count($headers), '');
         }
         $raw = array_combine($headers, $values);
 
