@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['web', 'auth', 'verified', 'admin'])
+    ->middleware(['web', 'auth', 'admin'])
     ->group(function () {
 
         // ── Dashboard (Module 8) ──────────────────────────────────────────────

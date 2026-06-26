@@ -125,12 +125,15 @@ class AdminDashboardController extends BaseController
                 ->toArray();
 
             // Utilisateurs connectés récemment (30 derniers jours)
-            // Via sessions ou last_login si disponible
-            $recentlyActive = DB::table('sessions')
-                ->where('last_activity', '>=', now()->subDays(30)->timestamp)
-                ->distinct('user_id')
-                ->whereNotNull('user_id')
-                ->count('user_id');
+            // Requête sur la table sessions uniquement si SESSION_DRIVER=database
+            $recentlyActive = 0;
+            if (config('session.driver') === 'database') {
+                $recentlyActive = DB::table('sessions')
+                    ->where('last_activity', '>=', now()->subDays(30)->timestamp)
+                    ->distinct('user_id')
+                    ->whereNotNull('user_id')
+                    ->count('user_id');
+            }
 
             return [
                 'total'           => $total,

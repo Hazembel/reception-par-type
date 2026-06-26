@@ -37,10 +37,11 @@
     <meta property="og:site_name"   content="reception-par-type.ch" />
     <meta property="og:locale"      content="{{ app()->getLocale() }}_CH" />
 
-    {{-- ══ Fonts ══════════════════════════════════════════════════════════════ --}}
+    {{-- ══ Fonts (non-blocking) ═══════════════════════════════════════════════ --}}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
 
     {{-- ══ Favicon ════════════════════════════════════════════════════════════ --}}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -117,10 +118,10 @@
     <header
         x-data="navbarManager()"
         x-bind:class="{
-            'bg-white/80 dark:bg-night/80 backdrop-blur-xl shadow-sm border-b border-white/20 dark:border-white/5': scrolled,
-            'bg-transparent': !scrolled
+            'shadow-sm border-b border-white/10 dark:border-white/5': scrolled,
+            'border-b border-transparent': !scrolled
         }"
-        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 dark:bg-night/85 backdrop-blur-xl"
         style="height: var(--navbar-height)"
     >
         <nav class="max-w-7xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
@@ -273,6 +274,18 @@
                        ">
                         {{ __('app.nav.profile') }}
                     </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                                class="
+                                    px-3.5 py-1.5 rounded-lg text-sm font-medium
+                                    text-slate-600 dark:text-slate-300
+                                    hover:bg-black/5 dark:hover:bg-white/10
+                                    transition-all duration-150
+                                ">
+                            {{ __('app.nav.logout') }}
+                        </button>
+                    </form>
                 @else
                     <a href="{{ route('login', ['locale' => app()->getLocale()]) }}"
                        class="
@@ -292,7 +305,7 @@
     {{-- ══════════════════════════════════════════════════════════════════════ --}}
     {{-- CONTENU PRINCIPAL                                                    --}}
     {{-- ══════════════════════════════════════════════════════════════════════ --}}
-    <main id="main-content" role="main" class="min-h-screen">
+    <main id="main-content" role="main" class="min-h-screen" style="padding-top: var(--navbar-height)">
         @yield('content')
     </main>
 
