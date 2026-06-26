@@ -360,7 +360,7 @@ class ImportAstraMainJob implements ShouldQueue
             $data['updated_at']   = now();
 
             if ($isNew) {
-                $data['id']         = Str::ulid()->toBase32Lower(); // Génération ULID
+                $data['id']         = strtolower((string) Str::ulid());
                 $data['created_at'] = now();
             }
 
