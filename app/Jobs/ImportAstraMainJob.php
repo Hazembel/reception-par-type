@@ -241,8 +241,10 @@ class ImportAstraMainJob implements ShouldQueue
                             'updated'  => $stats['lines_updated'],
                             'memory'   => round(memory_get_usage(true) / 1_048_576) . ' Mo',
                         ]);
-                        // Heartbeat pour éviter le timeout du worker
-                        $this->job?->ping();
+                        // Heartbeat pour éviter le timeout du worker (Redis/Beanstalk uniquement)
+                        if ($this->job && method_exists($this->job, 'ping')) {
+                            $this->job->ping();
+                        }
                     }
                 }
             }
