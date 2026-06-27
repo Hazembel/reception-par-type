@@ -101,7 +101,7 @@ class ImportLog extends Model
             'duration_seconds' => $this->started_at
                 ? max(0, (int) $finishedAt->diffInSeconds($this->started_at))
                 : null,
-            'error_message'    => $message,
+            'error_message'    => mb_substr($message, 0, 60000),
             'error_details'    => !empty($details) ? array_slice($details, 0, 100) : null,
         ]);
     }
