@@ -21,7 +21,7 @@ use Illuminate\View\View;
  */
 class VehicleController extends BaseController
 {
-    public function show(Request $request, Vehicle $vehicle): View
+    public function show(Request $request, string $locale, Vehicle $vehicle): View
     {
         // ── Lecture de la décision d'accès du middleware ──────────────────────
         $canViewAdvanced = (bool) $request->attributes->get('can_view_advanced', false);

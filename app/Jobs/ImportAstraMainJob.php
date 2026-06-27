@@ -338,24 +338,26 @@ class ImportAstraMainJob implements ShouldQueue
             return ['inserted' => 0, 'updated' => 0];
         }
 
-        // Récupération des numéros TG déjà présents pour calculer inserted vs updated
+        // Récupération des numéros TG déjà présents avec leur slug actuel
         $tgNumbers = array_column($chunk, 'numero_tg');
 
-        $existingTgs = Vehicle::whereIn('numero_tg', $tgNumbers)
-            ->pluck('numero_tg')
-            ->flip()
+        // Keyed by numero_tg => slug (null if never set)
+        $existingVehicles = Vehicle::whereIn('numero_tg', $tgNumbers)
+            ->pluck('slug', 'numero_tg')
             ->toArray();
 
-        // Enrichissement : génération du slug pour les nouveaux véhicules
+        // Enrichissement : génération du slug — TOUJOURS inclus pour que
+        // upsert() ait les mêmes clés sur toutes les lignes (Laravel dérive
+        // les colonnes INSERT depuis la première ligne du tableau).
         $preparedRows = [];
         foreach ($chunk as $data) {
-            $isNew = !isset($existingTgs[$data['numero_tg']]);
+            $isNew       = !array_key_exists($data['numero_tg'], $existingVehicles);
+            $existingSlug = $existingVehicles[$data['numero_tg']] ?? null;
 
-            // Génération du slug uniquement pour les nouveaux véhicules
-            // (les existants conservent leur slug pour ne pas casser les URLs)
-            if ($isNew && empty($data['slug'])) {
-                $data['slug'] = Vehicle::slugFromData($data);
-            }
+            // Nouveau ou existant sans slug → générer. Existant avec slug → conserver.
+            $data['slug'] = ($isNew || empty($existingSlug))
+                ? Vehicle::slugFromData($data)
+                : $existingSlug;
 
             $data['is_active']    = true;
             $data['imported_at']  = now();
@@ -388,7 +390,7 @@ class ImportAstraMainJob implements ShouldQueue
             );
         });
 
-        $inserted = count(array_filter($preparedRows, fn($r) => !isset($existingTgs[$r['numero_tg']])));
+        $inserted = count(array_filter($preparedRows, fn($r) => !array_key_exists($r['numero_tg'], $existingVehicles)));
         $updated  = count($preparedRows) - $inserted;
 
         return ['inserted' => $inserted, 'updated' => $updated];

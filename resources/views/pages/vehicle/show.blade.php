@@ -86,7 +86,7 @@
                 <x-data-row label="{{ __('app.vehicle.puissance_kw') }}"
                              :value="$vehicle->puissance_kw ? $vehicle->puissance_kw . ' kW (' . $vehicle->puissance_cv . ' CV)' : null" />
                 <x-data-row label="{{ __('app.vehicle.cylindree') }}"
-                             :value="$vehicle->cylindree ? number_format($vehicle->cylindree, 0, '.', '\\'') . ' cm³' : null" />
+                             :value="$vehicle->cylindree ? number_format($vehicle->cylindree, 0, '.', chr(39)) . ' cm³' : null" />
                 <x-data-row label="{{ __('app.vehicle.boite_vitesse') }}"
                              :value="App\Models\VehicleTranslation::translate('boite_vitesse', $vehicle->boite_vitesse ?? '', app()->getLocale())" />
             </x-slot>
@@ -97,11 +97,11 @@
             <x-vehicle-card title="Masses & Charges" icon="⚖️" :public="true">
                 <x-slot name="rows">
                     <x-data-row label="{{ __('app.vehicle.poids_vide') }}"
-                                 :value="$vehicle->poids_vide ? number_format($vehicle->poids_vide, 0, '.', '\\'') . ' kg' : null" />
+                                 :value="$vehicle->poids_vide ? number_format($vehicle->poids_vide, 0, '.', chr(39)) . ' kg' : null" />
                     <x-data-row label="{{ __('app.vehicle.poids_total') }}"
-                                 :value="$vehicle->poids_total ? number_format($vehicle->poids_total, 0, '.', '\\'') . ' kg' : null" />
+                                 :value="$vehicle->poids_total ? number_format($vehicle->poids_total, 0, '.', chr(39)) . ' kg' : null" />
                     <x-data-row label="{{ __('app.vehicle.poids_remorquable') }}"
-                                 :value="$vehicle->poids_remorquable ? number_format($vehicle->poids_remorquable, 0, '.', '\\'') . ' kg' : null" />
+                                 :value="$vehicle->poids_remorquable ? number_format($vehicle->poids_remorquable, 0, '.', chr(39)) . ' kg' : null" />
                 </x-slot>
             </x-vehicle-card>
         @else
