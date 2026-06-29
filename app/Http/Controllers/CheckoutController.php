@@ -6,6 +6,8 @@ use App\Http\Middleware\TrackAffiliate;
 use App\Models\PricingPlan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -97,40 +99,62 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Crée l'ordre via l'API PayPal Orders v2.
-     *
-     * ⚠️ Implémentation à adapter selon le SDK PayPal installé.
-     * Cette méthode illustre la structure de la requête : l'essentiel est que
-     * `custom_id` contienne bien l'intention d'achat + le code affilié.
+     * Crée l'ordre via l'API PayPal Orders v2 (REST, sans SDK tiers).
+     * Doc : https://developer.paypal.com/docs/api/orders/v2/#orders_create
      */
     private function createPayPalOrder(float $amountChf, string $customId, array $purchase): array
     {
-        $payload = [
-            'intent' => 'CAPTURE',
-            'purchase_units' => [[
-                'amount' => [
-                    'currency_code' => 'CHF',
-                    'value'         => number_format($amountChf, 2, '.', ''),
-                ],
-                'custom_id'   => $customId, // ← Le code affilié voyage jusqu'au webhook
-                'description' => $this->buildDescription($purchase),
-            ]],
-            'application_context' => [
-                'return_url' => config('services.paypal.return_url', config('app.url') . '/payment/success'),
-                'cancel_url' => config('services.paypal.cancel_url', config('app.url') . '/payment/cancel'),
-            ],
-        ];
+        $baseUrl = config('services.paypal.mode', 'sandbox') === 'live'
+            ? 'https://api.paypal.com'
+            : 'https://api.sandbox.paypal.com';
 
-        // Exemple d'appel réel (à décommenter selon votre intégration) :
-        //
-        //   $client = app(\PayPalCheckoutSdk\Core\PayPalHttpClient::class);
-        //   $req = new \PayPalCheckoutSdk\Orders\OrdersCreateRequest();
-        //   $req->body = $payload;
-        //   $response = $client->execute($req);
-        //   return ['id' => $response->result->id];
-        //
-        // Placeholder de développement : génère un faux ID d'ordre.
-        return ['id' => 'DEV-ORDER-' . \Illuminate\Support\Str::upper(\Illuminate\Support\Str::random(12))];
+        // Token OAuth2 (expires_in ~32 400 s) — mis en cache 8h pour éviter un
+        // appel supplémentaire à chaque checkout.
+        $accessToken = Cache::remember('paypal_access_token', 3600 * 8, function () use ($baseUrl) {
+            $response = Http::withBasicAuth(
+                config('services.paypal.client_id'),
+                config('services.paypal.client_secret')
+            )->asForm()->post("{$baseUrl}/v1/oauth2/token", [
+                'grant_type' => 'client_credentials',
+            ]);
+
+            if (!$response->successful()) {
+                throw new \RuntimeException('PayPal OAuth failed: ' . $response->body());
+            }
+
+            return $response->json('access_token');
+        });
+
+        $response = Http::withToken($accessToken)
+            ->post("{$baseUrl}/v2/checkout/orders", [
+                'intent' => 'CAPTURE',
+                'purchase_units' => [[
+                    'amount' => [
+                        'currency_code' => 'CHF',
+                        'value'         => number_format($amountChf, 2, '.', ''),
+                    ],
+                    'custom_id'   => $customId,
+                    'description' => $this->buildDescription($purchase),
+                ]],
+                'application_context' => [
+                    'return_url'  => config('services.paypal.return_url', config('app.url') . '/payment/success'),
+                    'cancel_url'  => config('services.paypal.cancel_url', config('app.url') . '/payment/cancel'),
+                    'brand_name'  => config('app.name', 'reception-par-type.ch'),
+                    'user_action' => 'PAY_NOW',
+                ],
+            ]);
+
+        if (!$response->successful()) {
+            // Vider le token caché si PayPal renvoie 401 (token expiré avant 8h)
+            if ($response->status() === 401) {
+                Cache::forget('paypal_access_token');
+            }
+            throw new \RuntimeException(
+                'PayPal order creation failed (' . $response->status() . '): ' . $response->body()
+            );
+        }
+
+        return $response->json();
     }
 
     private function buildDescription(array $purchase): string
