@@ -34,6 +34,7 @@ return new class extends Migration
             ['key' => 'company_city',         'value' => env('BILLING_CITY', 'Lausanne'),                      'group' => 'company', 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'company_email',        'value' => 'admin@reception-par-type.ch',                        'group' => 'company', 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'company_uid',          'value' => env('BILLING_UID', ''),                               'group' => 'company', 'created_at' => $now, 'updated_at' => $now],
+            ['key' => 'company_iban',         'value' => env('BILLING_IBAN', ''),                               'group' => 'company', 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'company_vat_exempt',   'value' => env('BILLING_VAT_EXEMPT', 'true'),                    'group' => 'company', 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'company_vat_number',   'value' => env('BILLING_VAT_NUMBER', ''),                        'group' => 'company', 'created_at' => $now, 'updated_at' => $now],
         ]);

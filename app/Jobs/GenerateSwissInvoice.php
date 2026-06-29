@@ -6,14 +6,23 @@ use App\Events\PaymentSucceeded;
 use App\Mail\InvoiceMail;
 use App\Models\Invoice;
 use App\Models\PricingPlan;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Sprain\SwissQrBill\DataGroup\Element\AdditionalInformation;
+use Sprain\SwissQrBill\DataGroup\Element\CreditorInformation;
+use Sprain\SwissQrBill\DataGroup\Element\PaymentAmountInformation;
+use Sprain\SwissQrBill\DataGroup\Element\PaymentReference;
+use Sprain\SwissQrBill\DataGroup\Element\StructuredAddress;
+use Sprain\SwissQrBill\PaymentPart\Output\HtmlOutput\HtmlOutput;
+use Sprain\SwissQrBill\QrBill;
 
 /**
  * Job : GenerateSwissInvoice
@@ -102,7 +111,7 @@ class GenerateSwissInvoice implements ShouldQueue
 
         // Calcul TVA selon la situation de l'entreprise
         // En Suisse : exonéré si CA < 100 000 CHF/an (art. 10 LTVA)
-        $isVatExempt   = config('billing.vat_exempt', true);
+        $isVatExempt   = Setting::get('company_vat_exempt', 'true') === 'true';
         $vatRateBp     = $isVatExempt ? 0 : 810;  // 810 = 8.10% en points de base
         $subtotalCts   = $isVatExempt
             ? $this->amountCts
@@ -137,7 +146,10 @@ class GenerateSwissInvoice implements ShouldQueue
 
     private function generatePdf(Invoice $invoice): string
     {
-        $html = view('invoices.pdf', ['invoice' => $invoice])->render();
+        $html = view('invoices.pdf', [
+            'invoice'    => $invoice,
+            'qrBillHtml' => $this->generateQrBillHtml($invoice),
+        ])->render();
 
         $filename = "invoices/{$invoice->invoice_number}.pdf";
         $tempPath = sys_get_temp_dir() . "/{$invoice->invoice_number}.pdf";
@@ -161,6 +173,75 @@ class GenerateSwissInvoice implements ShouldQueue
         unlink($tempPath);
 
         return $filename;
+    }
+
+    // ── QR-Facture suisse (SIX Group spec, obligatoire dès 2023) ─────────────
+
+    private function generateQrBillHtml(Invoice $invoice): ?string
+    {
+        $iban = str_replace([' ', '-'], '', Setting::get('company_iban', ''));
+        if (strlen($iban) < 21) {
+            return null; // IBAN not configured in admin settings — skip QR slip
+        }
+
+        try {
+            $addr    = $invoice->billing_address;
+            $postal  = trim(preg_replace('/^CH[-\s]?/i', '', Setting::get('company_postal', '1000')));
+            $city    = trim(Setting::get('company_city', 'Lausanne'));
+
+            $qrBill = QrBill::create();
+
+            $qrBill->setCreditorInformation(
+                CreditorInformation::create($iban)
+            );
+
+            $qrBill->setCreditor(
+                StructuredAddress::createWithoutStreet(
+                    Setting::get('company_name', 'reception-par-type.ch'),
+                    $postal,
+                    $city,
+                    'CH'
+                )
+            );
+
+            $qrBill->setPaymentAmountInformation(
+                PaymentAmountInformation::create('CHF', round($invoice->total_cts / 100, 2))
+            );
+
+            $qrBill->setPaymentReference(
+                PaymentReference::create(PaymentReference::TYPE_NON)
+            );
+
+            // Set debtor if structured address is available
+            $debtorName    = trim($addr['name'] ?? '');
+            $debtorStreet  = trim($addr['line1'] ?? '');
+            $debtorPostal  = trim($addr['postal'] ?? '');
+            $debtorCity    = trim($addr['city'] ?? '');
+            $debtorCountry = strtoupper(trim($addr['country'] ?? 'CH'));
+
+            if ($debtorName && $debtorPostal && $debtorCity) {
+                $qrBill->setUltimateDebtor(
+                    StructuredAddress::createWithStreet(
+                        $debtorName,
+                        $debtorStreet ?: null,
+                        null,
+                        $debtorPostal,
+                        $debtorCity,
+                        $debtorCountry ?: 'CH'
+                    )
+                );
+            }
+
+            $qrBill->setAdditionalInformation(
+                AdditionalInformation::create('Facture ' . $invoice->invoice_number)
+            );
+
+            $output = new HtmlOutput($qrBill, 'fr');
+            return $output->getPaymentPart();
+        } catch (\Throwable $e) {
+            Log::warning('QR-facture non générée : ' . $e->getMessage());
+            return null;
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

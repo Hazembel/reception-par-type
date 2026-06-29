@@ -134,6 +134,14 @@
             </div>
         </div>
 
+        <div class="ps-form-group">
+            <label class="ps-label">IBAN <span class="ps-help">— compte bancaire suisse pour la QR-facture (ex: CH56 0483 5012 3456 7800 9)</span></label>
+            <input type="text" name="company_iban" class="ps-input"
+                   value="{{ $company['company_iban'] ?? '' }}"
+                   placeholder="CH56 0483 5012 3456 7800 9"
+                   style="max-width:380px; font-family: monospace; letter-spacing: 0.5px">
+        </div>
+
         <div class="ps-grid-2">
             <div class="ps-form-group">
                 <label class="ps-label">Statut TVA</label>

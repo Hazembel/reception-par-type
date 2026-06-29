@@ -9,6 +9,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PayPalWebhookController;
 use App\Http\Controllers\Account\AffiliateController;
 use App\Http\Controllers\Account\InvoiceController;
+use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\CompareController;
 use Illuminate\Support\Facades\Route;
@@ -77,6 +78,9 @@ Route::prefix('{locale}')
         Route::middleware(['auth', 'verified'])->prefix('account')->name('account.')->group(function () {
             Route::get('/affiliate',       [AffiliateController::class, 'index'])->name('affiliate.index');
             Route::post('/affiliate/join', [AffiliateController::class, 'join'])->name('affiliate.join');
+            Route::get('/profile',          [ProfileController::class, 'show'])->name('profile.show');
+            Route::put('/profile',          [ProfileController::class, 'updateInfo'])->name('profile.update');
+            Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
             Route::get('/invoices',                     [InvoiceController::class, 'index'])->name('invoices.index');
             Route::get('/invoices/{invoice}/download',  [InvoiceController::class, 'download'])->name('invoices.download');
         });

@@ -54,6 +54,20 @@ Schedule::command('astra:import --type=main --triggered-by=scheduler')
     ->name('astra-main-import')
     ->description('Import mensuel complet ASTRA (dossier 2000, fichier ~300 Mo)');
 
+// ── Import Émissions mensuel (emissionen.txt, dossier 2000) ──────────────────
+/**
+ * Exécution : le 11 de chaque mois à 04h00 (après l'import principal du 10)
+ * Enrichit les données CO2 / norme anti-pollution des véhicules déjà importés.
+ */
+Schedule::command('astra:import --type=emissions --triggered-by=scheduler')
+    ->monthlyOn(11, '04:00')
+    ->withoutOverlapping(120)
+    ->runInBackground()
+    ->onOneServer()
+    ->appendOutputTo(storage_path('logs/astra-emissions.log'))
+    ->name('astra-emissions-import')
+    ->description('Import mensuel des données d\'émissions ASTRA (emissionen.txt)');
+
 // ── Nettoyage des anciens logs d'import ──────────────────────────────────────
 /**
  * Suppression des entrées imports_log de plus de 6 mois.

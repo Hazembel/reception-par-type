@@ -93,18 +93,18 @@
     {{-- Vendeur --}}
     <div class="address-block">
       <div class="label">Vendeur / Fournisseur</div>
-      <p class="company">{{ config('billing.company_name', 'reception-par-type.ch Sàrl') }}</p>
-      <p>{{ config('billing.address_line1', 'Rue de la Paix 1') }}</p>
-      <p>{{ config('billing.postal', 'CH-1000') }} {{ config('billing.city', 'Lausanne') }}</p>
+      <p class="company">{{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }}</p>
+      <p>{{ \App\Models\Setting::get('company_address', 'Rue de la Paix 1') }}</p>
+      <p>{{ \App\Models\Setting::get('company_postal', 'CH-1000') }} {{ \App\Models\Setting::get('company_city', 'Lausanne') }}</p>
       <p>Suisse</p>
-      @if(config('billing.uid'))
+      @if(\App\Models\Setting::get('company_uid'))
       <p style="margin-top:2mm;font-size:8pt;color:#64748B">
-        IDE/UID : {{ config('billing.uid') }}
+        IDE/UID : {{ \App\Models\Setting::get('company_uid') }}
       </p>
       @endif
-      @if(!config('billing.vat_exempt', true) && config('billing.vat_number'))
+      @if(\App\Models\Setting::get('company_vat_exempt', 'true') !== 'true' && \App\Models\Setting::get('company_vat_number'))
       <p style="font-size:8pt;color:#64748B">
-        N° TVA : {{ config('billing.vat_number') }}
+        N° TVA : {{ \App\Models\Setting::get('company_vat_number') }}
       </p>
       @endif
     </div>
@@ -196,10 +196,18 @@
 
   {{-- Pied de page --}}
   <div class="footer">
-    <p>{{ config('billing.company_name', 'reception-par-type.ch Sàrl') }} · {{ config('billing.address_line1') }} · {{ config('billing.postal') }} {{ config('billing.city') }} · Suisse</p>
+    <p>{{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }} · {{ \App\Models\Setting::get('company_address') }} · {{ \App\Models\Setting::get('company_postal') }} {{ \App\Models\Setting::get('company_city') }} · Suisse</p>
     <p>{{ $invoice->invoice_number }} · {{ $invoice->issued_at->format('d.m.Y') }}</p>
   </div>
 
 </div>
+
+@if(!empty($qrBillHtml))
+{{-- QR-Facture suisse (SIX Group spec) — nouvelle page --}}
+<div style="page-break-before: always; padding: 0; margin: 0;">
+  {!! $qrBillHtml !!}
+</div>
+@endif
+
 </body>
 </html>

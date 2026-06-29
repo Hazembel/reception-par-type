@@ -50,6 +50,7 @@ class AdminSettingsController extends Controller
             'company_city'       => ['required', 'string', 'max:100'],
             'company_email'      => ['required', 'email', 'max:200'],
             'company_uid'        => ['nullable', 'string', 'max:50'],
+            'company_iban'       => ['nullable', 'string', 'max:34', 'regex:/^CH\d{2}[\s\d]{12,30}$/i'],
             'company_vat_exempt' => ['nullable', 'in:true,false,1,0'],
             'company_vat_number' => ['nullable', 'string', 'max:50'],
         ]);
