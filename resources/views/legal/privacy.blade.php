@@ -8,8 +8,8 @@
         <section>
             <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">Responsable du traitement</h2>
             <p>
-                <strong>{{ config('billing.company_name', 'reception-par-type.ch Sàrl') }}</strong><br>
-                {{ config('billing.address_line1', 'Rue de Genève 1') }}, {{ config('billing.postal', 'CH-1003') }} {{ config('billing.city', 'Lausanne') }}, Suisse<br>
+                <strong>{{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }}</strong><br>
+                {{ \App\Models\Setting::get('company_address', 'Rue de Genève 1') }}, {{ \App\Models\Setting::get('company_postal', 'CH-1003') }} {{ \App\Models\Setting::get('company_city', 'Lausanne') }}, Suisse<br>
                 E-mail : <a href="mailto:admin@reception-par-type.ch" class="text-blue-600 dark:text-blue-400">admin@reception-par-type.ch</a>
             </p>
         </section>

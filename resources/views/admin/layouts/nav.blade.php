@@ -79,8 +79,16 @@
     </ul>
 </div>
 
-{{-- ════ RETOUR SITE ════ --}}
+{{-- ════ PARAMÈTRES ════ --}}
 <div class="ps-nav-section">Paramètres</div>
+
+<div class="ps-nav-item {{ $is('admin.settings.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.settings.index') }}" class="ps-nav-link">
+        <span class="ps-icon">⚙️</span>
+        <span class="ps-label">Paramètres</span>
+    </a>
+</div>
+
 <div class="ps-nav-item">
     <a href="{{ url('/fr') }}" target="_blank" class="ps-nav-link">
         <span class="ps-icon">🌐</span>

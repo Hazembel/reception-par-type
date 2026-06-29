@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Middleware\TrackAffiliate;
 use App\Models\PricingPlan;
+use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -104,7 +105,7 @@ class CheckoutController extends Controller
      */
     private function createPayPalOrder(float $amountChf, string $customId, array $purchase): array
     {
-        $baseUrl = config('services.paypal.mode', 'sandbox') === 'live'
+        $baseUrl = Setting::get('paypal_mode', 'sandbox') === 'live'
             ? 'https://api.paypal.com'
             : 'https://api.sandbox.paypal.com';
 
@@ -112,8 +113,8 @@ class CheckoutController extends Controller
         // appel supplémentaire à chaque checkout.
         $accessToken = Cache::remember('paypal_access_token', 3600 * 8, function () use ($baseUrl) {
             $response = Http::withBasicAuth(
-                config('services.paypal.client_id'),
-                config('services.paypal.client_secret')
+                Setting::get('paypal_client_id', ''),
+                Setting::get('paypal_client_secret', '')
             )->asForm()->post("{$baseUrl}/v1/oauth2/token", [
                 'grant_type' => 'client_credentials',
             ]);
@@ -137,8 +138,8 @@ class CheckoutController extends Controller
                     'description' => $this->buildDescription($purchase),
                 ]],
                 'application_context' => [
-                    'return_url'  => config('services.paypal.return_url', config('app.url') . '/payment/success'),
-                    'cancel_url'  => config('services.paypal.cancel_url', config('app.url') . '/payment/cancel'),
+                    'return_url'  => Setting::get('paypal_return_url', config('app.url') . '/payment/success'),
+                    'cancel_url'  => Setting::get('paypal_cancel_url', config('app.url') . '/payment/cancel'),
                     'brand_name'  => config('app.name', 'reception-par-type.ch'),
                     'user_action' => 'PAY_NOW',
                 ],

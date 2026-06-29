@@ -8,19 +8,19 @@
         <section>
             <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">Éditeur du site</h2>
             <p>
-                <strong>Raison sociale :</strong> {{ config('billing.company_name', 'reception-par-type.ch Sàrl') }}<br>
+                <strong>Raison sociale :</strong> {{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }}<br>
                 <strong>Forme juridique :</strong> Société à responsabilité limitée (Sàrl)<br>
-                <strong>Adresse :</strong> {{ config('billing.address_line1', 'Rue de Genève 1') }}, {{ config('billing.postal', 'CH-1003') }} {{ config('billing.city', 'Lausanne') }}, Suisse<br>
+                <strong>Adresse :</strong> {{ \App\Models\Setting::get('company_address', 'Rue de Genève 1') }}, {{ \App\Models\Setting::get('company_postal', 'CH-1003') }} {{ \App\Models\Setting::get('company_city', 'Lausanne') }}, Suisse<br>
                 <strong>E-mail :</strong> <a href="mailto:admin@reception-par-type.ch" class="text-blue-600 dark:text-blue-400">admin@reception-par-type.ch</a>
-                @if(config('billing.uid'))
-                <br><strong>IDE/UID :</strong> {{ config('billing.uid') }}
+                @if(\App\Models\Setting::get('company_uid'))
+                <br><strong>IDE/UID :</strong> {{ \App\Models\Setting::get('company_uid') }}
                 @endif
             </p>
         </section>
 
         <section>
             <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">Directeur de la publication</h2>
-            <p>Le directeur de la publication est le représentant légal de {{ config('billing.company_name', 'reception-par-type.ch Sàrl') }}.</p>
+            <p>Le directeur de la publication est le représentant légal de {{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }}.</p>
         </section>
 
         <section>
@@ -46,7 +46,7 @@
         <section>
             <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">Limitation de responsabilité</h2>
             <p>
-                Les informations publiées sur ce site sont issues de sources officielles (OFROU/ASTRA) et sont fournies à titre indicatif. {{ config('billing.company_name', 'reception-par-type.ch Sàrl') }} s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées, mais ne peut garantir l'exhaustivité, l'exactitude ou l'adéquation à un usage particulier.
+                Les informations publiées sur ce site sont issues de sources officielles (OFROU/ASTRA) et sont fournies à titre indicatif. {{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }} s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées, mais ne peut garantir l'exhaustivité, l'exactitude ou l'adéquation à un usage particulier.
             </p>
             <p class="mt-2">
                 En cas de divergence entre les informations publiées sur ce site et les données figurant dans les registres officiels, ces derniers font foi.
@@ -56,7 +56,7 @@
         <section>
             <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">Liens hypertextes</h2>
             <p>
-                Ce site peut contenir des liens vers des sites tiers. {{ config('billing.company_name', 'reception-par-type.ch Sàrl') }} n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.
+                Ce site peut contenir des liens vers des sites tiers. {{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }} n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.
             </p>
         </section>
 

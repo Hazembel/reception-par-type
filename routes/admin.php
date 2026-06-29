@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminPricingController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminImportController;
 use App\Http\Controllers\Admin\AdminAffiliateController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -47,4 +48,9 @@ Route::prefix('admin')
         Route::post('/affiliates/{affiliate}/approve', [AdminAffiliateController::class, 'approve'])->name('affiliates.approve');
         Route::post('/affiliates/{affiliate}/pay',     [AdminAffiliateController::class, 'pay'])->name('affiliates.pay');
         Route::post('/affiliates/{affiliate}/toggle',  [AdminAffiliateController::class, 'toggleStatus'])->name('affiliates.toggle');
+
+        // ── Paramètres (PayPal + Société) ─────────────────────────────────────
+        Route::get('/settings',         [AdminSettingsController::class, 'index'])->name('settings.index');
+        Route::post('/settings/paypal', [AdminSettingsController::class, 'updatePaypal'])->name('settings.paypal');
+        Route::post('/settings/company',[AdminSettingsController::class, 'updateCompany'])->name('settings.company');
     });

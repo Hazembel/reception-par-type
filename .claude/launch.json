@@ -5,7 +5,8 @@
       "name": "Laravel (php artisan serve)",
       "runtimeExecutable": "D:\\DiskFiles\\Apps\\php81\\php.exe",
       "runtimeArgs": ["artisan", "serve", "--port=8000"],
-      "port": 8000
+      "port": 8000,
+      "autoPort": false
     },
     {
       "name": "Vite (npm run dev)",

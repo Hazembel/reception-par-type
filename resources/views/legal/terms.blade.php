@@ -8,7 +8,7 @@
         <section>
             <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">1. Objet et champ d'application</h2>
             <p>
-                Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme <strong>reception-par-type.ch</strong>, exploitée par {{ config('billing.company_name', 'reception-par-type.ch Sàrl') }}, {{ config('billing.address_line1', 'Rue de Genève 1') }}, {{ config('billing.postal', 'CH-1003') }} {{ config('billing.city', 'Lausanne') }}, Suisse (ci-après « l'Éditeur »).
+                Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme <strong>reception-par-type.ch</strong>, exploitée par {{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }}, {{ \App\Models\Setting::get('company_address', 'Rue de Genève 1') }}, {{ \App\Models\Setting::get('company_postal', 'CH-1003') }} {{ \App\Models\Setting::get('company_city', 'Lausanne') }}, Suisse (ci-après « l'Éditeur »).
             </p>
             <p class="mt-2">
                 La plateforme permet de consulter les données de réception par type (homologations) des véhicules enregistrés en Suisse, issues du système TARGA de l'Office fédéral des routes (OFROU/ASTRA). L'utilisation de la plateforme implique l'acceptation sans réserve des présentes CGU.
@@ -148,7 +148,7 @@
             <p>
                 Pour toute question relative aux présentes CGU :<br>
                 <a href="mailto:admin@reception-par-type.ch" class="text-blue-600 dark:text-blue-400">admin@reception-par-type.ch</a><br>
-                {{ config('billing.company_name', 'reception-par-type.ch Sàrl') }}, {{ config('billing.address_line1', 'Rue de Genève 1') }}, {{ config('billing.postal', 'CH-1003') }} {{ config('billing.city', 'Lausanne') }}, Suisse
+                {{ \App\Models\Setting::get('company_name', 'reception-par-type.ch Sàrl') }}, {{ \App\Models\Setting::get('company_address', 'Rue de Genève 1') }}, {{ \App\Models\Setting::get('company_postal', 'CH-1003') }} {{ \App\Models\Setting::get('company_city', 'Lausanne') }}, Suisse
             </p>
         </section>
 
