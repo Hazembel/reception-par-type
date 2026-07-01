@@ -196,7 +196,10 @@ class AstraFileParser
     public const VERBRAUCH_COLUMN_MAP = [
         'tg-code'                    => 'numero_tg',
         'energieeffizienzkategorie'  => 'energie_label',
-        'zt_verbrauch'               => 'consommation_mixte',   // NEDC combined (l/100km)
+        // ET = older NEDC single-test (fallback when ZT is absent)
+        'et_verbrauch'               => '_et_conso',
+        // ZT = NEDC combined (preferred source)
+        'zt_verbrauch'               => 'consommation_mixte',
         'zt_verbrauch_wltp'          => 'consommation_wltp',    // WLTP combined (l/100km)
         'zt_co2_wltp'                => 'co2_wltp',             // WLTP CO2 (g/km)
         'el_verbrauch_wltp'          => 'consommation_el',      // electric (kWh/100km)
@@ -390,6 +393,13 @@ class AstraFileParser
 
         self::castIntegers($mapped);
         self::castDecimals($mapped);
+
+        // ET_Verbrauch fallback: if ZT combined is null/zero, use ET single-test value.
+        if (empty($mapped['consommation_mixte']) && isset($mapped['_et_conso'])) {
+            $et = (float) str_replace(',', '.', (string) $mapped['_et_conso']);
+            $mapped['consommation_mixte'] = $et > 0 ? $et : null;
+        }
+        unset($mapped['_et_conso']);
 
         // Only keep row if it has at least one consumption or label value.
         $hasPayload = isset($mapped['consommation_mixte'])
