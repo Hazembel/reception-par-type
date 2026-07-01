@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\ImportAstraEmissionsJob;
 use App\Jobs\ImportAstraMainJob;
 use App\Jobs\ImportAstraNewsletterJob;
+use App\Jobs\ImportAstraVerbrauchJob;
 use App\Models\ImportLog;
 use App\Models\Vehicle;
 use Illuminate\Console\Command;
@@ -21,9 +22,9 @@ use Illuminate\Support\Facades\Log;
  *   main        → ImportAstraMainJob (voitures)   (TG-Automobil.txt)
  *   moto        → ImportAstraMainJob (motos)      (TG-Moto.txt)
  *   emissions   → ImportAstraEmissionsJob         (emissionen.txt)
- *   all         → main → moto → emissions (DANS CET ORDRE : les émissions sont
- *                 couplées aux fiches TG par numéro de réception, elles doivent
- *                 donc être importées APRÈS les voitures et les motos)
+ *   verbrauch   → ImportAstraVerbrauchJob         (verbrauch.txt)
+ *   all         → main → moto → emissions → verbrauch (cet ordre est important :
+ *                 les imports d'enrichissement doivent suivre les imports TG)
  *
  * Options :
  *   --force            → Ignore les vérifications de planning
@@ -38,7 +39,7 @@ use Illuminate\Support\Facades\Log;
 class ProcessAstraImports extends Command
 {
     protected $signature = 'astra:import
-                            {--type=newsletter : Type d\'import (newsletter|main|moto|emissions|all)}
+                            {--type=newsletter : Type d\'import (newsletter|main|moto|emissions|verbrauch|all)}
                             {--force           : Force l\'import même si déjà fait récemment}
                             {--file=           : Chemin d\'un fichier spécifique à importer}
                             {--triggered-by=scheduler : Origine du déclenchement}';
@@ -68,6 +69,7 @@ class ProcessAstraImports extends Command
             'main'       => $this->runMainImport($force, $triggeredBy, $specificFile),
             'moto'       => $this->runMotoImport($force, $triggeredBy, $specificFile),
             'emissions'  => $this->runEmissionsImport($force, $triggeredBy, $specificFile),
+            'verbrauch'  => $this->runVerbrauchImport($force, $triggeredBy, $specificFile),
             'all'        => $this->runAll($force, $triggeredBy),
             default      => $this->invalidType($type),
         };
@@ -215,28 +217,67 @@ class ProcessAstraImports extends Command
         return self::SUCCESS;
     }
 
-    // ── Import complet : voitures → motos → émissions ─────────────────────────
+    // ── Import Consommation (verbrauch.txt) ───────────────────────────────────
+
+    private function runVerbrauchImport(bool $force, string $triggeredBy, ?string $specificFile): int
+    {
+        $filePath = $specificFile
+            ?? config('astra.paths.verbrauch_file', storage_path('app/astra/2000/verbrauch.txt'));
+
+        if (!$force) {
+            $recentImport = ImportLog::where('import_type', 'verbrauch')
+                ->whereIn('status', ['completed', 'partial'])
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->exists();
+
+            if ($recentImport) {
+                $this->info('✓ Import consommation déjà effectué ce mois-ci. Utilisez --force pour forcer.');
+                return self::SUCCESS;
+            }
+        }
+
+        if (!file_exists($filePath)) {
+            $this->error("❌ Fichier consommation introuvable : {$filePath}");
+            $this->line("Configurez 'astra.paths.verbrauch_file' dans config/astra.php");
+            return self::FAILURE;
+        }
+
+        $fileSize = round(filesize($filePath) / 1_048_576, 1);
+        $this->line("⛽ Consommation : {$filePath} ({$fileSize} Mo)");
+
+        ImportAstraVerbrauchJob::dispatch($filePath, $triggeredBy)
+            ->onQueue('imports-heavy');
+
+        $this->info('✅ ImportAstraVerbrauchJob dispatché en queue imports-heavy.');
+
+        return self::SUCCESS;
+    }
+
+    // ── Import complet : voitures → motos → émissions → consommation ──────────
 
     private function runAll(bool $force, string $triggeredBy): int
     {
-        $this->line('--- 1/3 Voitures (TG-Automobil.txt) ---');
+        $this->line('--- 1/4 Voitures (TG-Automobil.txt) ---');
         $r1 = $this->runMainImport($force, $triggeredBy, null);
 
-        $this->line('--- 2/3 Motos (TG-Moto.txt) ---');
+        $this->line('--- 2/4 Motos (TG-Moto.txt) ---');
         $r2 = $this->runMotoImport($force, $triggeredBy, null);
 
-        $this->line('--- 3/3 Émissions (emissionen.txt) ---');
+        $this->line('--- 3/4 Émissions (emissionen.txt) ---');
         $this->warn('ℹ️  Les émissions sont couplées aux fiches TG : assurez-vous que les imports voitures/motos sont terminés avant que ce job ne s\'exécute (queue séquentielle recommandée).');
         $r3 = $this->runEmissionsImport($force, $triggeredBy, null);
 
-        return ($r1 === self::SUCCESS && $r2 === self::SUCCESS && $r3 === self::SUCCESS)
+        $this->line('--- 4/4 Consommation (verbrauch.txt) ---');
+        $r4 = $this->runVerbrauchImport($force, $triggeredBy, null);
+
+        return ($r1 === self::SUCCESS && $r2 === self::SUCCESS && $r3 === self::SUCCESS && $r4 === self::SUCCESS)
             ? self::SUCCESS
             : self::FAILURE;
     }
 
     private function invalidType(string $type): int
     {
-        $this->error("Type d'import invalide : '{$type}'. Utilisez : newsletter, main, moto, emissions, ou all.");
+        $this->error("Type d'import invalide : '{$type}'. Utilisez : newsletter, main, moto, emissions, verbrauch, ou all.");
         return self::INVALID;
     }
 }

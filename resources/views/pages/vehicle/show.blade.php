@@ -114,18 +114,47 @@
             />
         @endif
 
-        {{-- ── CARTE 3 : Émissions (toujours visible) ─────────────────────── --}}
-        <x-vehicle-card title="Émissions" icon="🌿" :public="true">
+        {{-- ── CARTE 3 : Émissions & Consommation (toujours visible) ────────── --}}
+        <x-vehicle-card title="Émissions & Consommation" icon="🌿" :public="true">
             <x-slot name="rows">
                 <x-data-row label="{{ __('app.vehicle.co2') }}"
                              :value="$vehicle->co2 !== null && $vehicle->co2 > 0
                                  ? $vehicle->co2 . ' g/km'
                                  : ($vehicle->co2 === 0 && $vehicle->isElectric() ? '0 g/km (ZEV)' : null)" />
+                @if($vehicle->co2_wltp)
+                    <x-data-row label="CO₂ WLTP"
+                                 :value="$vehicle->co2_wltp . ' g/km'" />
+                @endif
                 <x-data-row label="{{ __('app.vehicle.code_emissions') }}"
                              :value="$vehicle->pollution_norm
                                  ?: ($vehicle->code_emissions
                                      ? (App\Models\VehicleTranslation::translate('code_emissions', $vehicle->code_emissions, app()->getLocale()) ?? $vehicle->code_emissions)
                                      : null)" />
+                @if($vehicle->consommation_mixte)
+                    <x-data-row label="Consommation NE"
+                                 :value="number_format($vehicle->consommation_mixte, 2, '.', '') . ' l/100km'" />
+                @endif
+                @if($vehicle->consommation_wltp)
+                    <x-data-row label="Consommation WLTP"
+                                 :value="number_format($vehicle->consommation_wltp, 2, '.', '') . ' l/100km'" />
+                @endif
+                @if($vehicle->consommation_el)
+                    <x-data-row label="Consommation élec."
+                                 :value="number_format($vehicle->consommation_el, 2, '.', '') . ' kWh/100km'" />
+                @endif
+                @if($vehicle->autonomie_min || $vehicle->autonomie_max)
+                    @php
+                        $autonomie = $vehicle->autonomie_min && $vehicle->autonomie_max && $vehicle->autonomie_min !== $vehicle->autonomie_max
+                            ? $vehicle->autonomie_min . ' – ' . $vehicle->autonomie_max . ' km'
+                            : ($vehicle->autonomie_max ?? $vehicle->autonomie_min) . ' km';
+                    @endphp
+                    <x-data-row label="Autonomie électrique"
+                                 :value="$autonomie" />
+                @endif
+                @if($vehicle->energie_label)
+                    <x-data-row label="Label énergétique"
+                                 :value="$vehicle->energie_label" />
+                @endif
             </x-slot>
         </x-vehicle-card>
 

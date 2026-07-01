@@ -188,10 +188,32 @@ class AstraFileParser
         'pollution_norm'          => 'pollution_norm',
     ];
 
+    /**
+     * Mapping des colonnes verbrauch.txt vers `vehicles`.
+     *
+     * @var array<string, string>
+     */
+    public const VERBRAUCH_COLUMN_MAP = [
+        'tg-code'                    => 'numero_tg',
+        'energieeffizienzkategorie'  => 'energie_label',
+        'zt_verbrauch'               => 'consommation_mixte',   // NEDC combined (l/100km)
+        'zt_verbrauch_wltp'          => 'consommation_wltp',    // WLTP combined (l/100km)
+        'zt_co2_wltp'                => 'co2_wltp',             // WLTP CO2 (g/km)
+        'el_verbrauch_wltp'          => 'consommation_el',      // electric (kWh/100km)
+        'el_reichweite_von_wltp'     => 'autonomie_min',        // EV range min (km)
+        'el_reichweite_bis_wltp'     => 'autonomie_max',        // EV range max (km)
+    ];
+
     /** Champs entiers communs (nettoyage numérique). */
     private const INTEGER_FIELDS = [
         'puissance_kw', 'cylindree', 'poids_vide', 'poids_total',
-        'poids_remorquable', 'co2', 'nb_trous', 'entraxe', 'alesage', 'deport_et',
+        'poids_remorquable', 'co2', 'co2_wltp', 'autonomie_min', 'autonomie_max',
+        'nb_trous', 'entraxe', 'alesage', 'deport_et',
+    ];
+
+    /** Champs décimaux (consommation en l/100km ou kWh/100km). */
+    private const DECIMAL_FIELDS = [
+        'consommation_mixte', 'consommation_wltp', 'consommation_el',
     ];
 
     /**
@@ -329,6 +351,59 @@ class AstraFileParser
     }
 
     /**
+     * Parse une ligne du fichier de consommation (verbrauch.txt).
+     *
+     * @param  array<string>        $headers
+     * @param  array<string>        $values
+     * @return array<string, mixed>|null  Null si pas de TG ou aucune donnée utile
+     */
+    public static function parseVerbrauchLine(array $headers, array $values): ?array
+    {
+        if (count($values) > count($headers)) {
+            return null;
+        }
+        if (count($values) < count($headers)) {
+            $values = array_pad($values, count($headers), '');
+        }
+        $raw = array_combine($headers, $values);
+
+        $mapped = [];
+        foreach (self::VERBRAUCH_COLUMN_MAP as $col => $field) {
+            if (isset($raw[$col])) {
+                $val = trim($raw[$col]);
+                if ($val === '' || $val === '-') {
+                    $mapped[$field] ??= null;
+                } else {
+                    $mapped[$field] = $val;
+                }
+            }
+        }
+
+        if (empty($mapped['numero_tg'])) {
+            return null;
+        }
+
+        $mapped['numero_tg'] = self::cleanNumeroTg($mapped['numero_tg']);
+        if (strlen($mapped['numero_tg']) < 5) {
+            return null;
+        }
+
+        self::castIntegers($mapped);
+        self::castDecimals($mapped);
+
+        // Only keep row if it has at least one consumption or label value.
+        $hasPayload = isset($mapped['consommation_mixte'])
+            || isset($mapped['consommation_wltp'])
+            || isset($mapped['co2_wltp'])
+            || isset($mapped['consommation_el'])
+            || isset($mapped['autonomie_min'])
+            || isset($mapped['autonomie_max'])
+            || isset($mapped['energie_label']);
+
+        return $hasPayload ? $mapped : null;
+    }
+
+    /**
      * Caste en entier les champs numériques d'un tableau mappé (en place).
      * Extrait la partie numérique d'une valeur du type "150 kW" → 150.
      *
@@ -340,6 +415,21 @@ class AstraFileParser
             if (isset($mapped[$field]) && $mapped[$field] !== null) {
                 preg_match('/^-?\d+/', (string) $mapped[$field], $m);
                 $mapped[$field] = !empty($m) ? (int) $m[0] : null;
+            }
+        }
+    }
+
+    /**
+     * Caste en float les champs décimaux (consommation l/100km, kWh/100km).
+     *
+     * @param array<string, mixed> $mapped
+     */
+    private static function castDecimals(array &$mapped): void
+    {
+        foreach (self::DECIMAL_FIELDS as $field) {
+            if (isset($mapped[$field]) && $mapped[$field] !== null) {
+                $val = (float) str_replace(',', '.', (string) $mapped[$field]);
+                $mapped[$field] = $val > 0 ? $val : null;
             }
         }
     }
