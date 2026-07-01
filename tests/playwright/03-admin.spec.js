@@ -48,21 +48,29 @@ test.describe('Admin users list', () => {
         await expect(page.locator('body')).not.toContainText('Whoops');
     });
 
-    test('filter by subscription level', async ({ page }) => {
-        await page.goto('/admin/users?level=8');
+    test('filter by subscription level (non-admin levels)', async ({ page }) => {
+        await page.goto('/admin/users?level=1');
         await expect(page.locator('body')).not.toContainText('Whoops');
-        // Admin account should appear in level=8 filter
+    });
+});
+
+test.describe('Admin administrators list', () => {
+    test('/admin/users/admins shows admin account', async ({ page }) => {
+        await page.goto('/admin/users/admins');
+        await expect(page.locator('body')).not.toContainText('Whoops');
         await expect(page.locator('body')).toContainText('admin@reception-par-type.ch');
     });
 });
 
 test.describe('Admin user detail', () => {
     test('admin user show page loads', async ({ page }) => {
-        // Navigate to users, find the admin row link
-        await page.goto('/admin/users?level=8');
-        const firstUserLink = page.locator('a[href*="/admin/users/"]').first();
-        await expect(firstUserLink).toBeVisible();
-        await firstUserLink.click();
+        // Use the dedicated admins route (level=8 is excluded from the regular users list)
+        await page.goto('/admin/users/admins');
+        // Get the link from the TABLE (not the nav sidebar which also has /admin/users/ links)
+        const rowLink = page.locator('table a[href*="/admin/users/"]').first();
+        await expect(rowLink).toBeVisible();
+        const href = await rowLink.getAttribute('href');
+        await page.goto(href ?? '/admin/users');
         await expect(page).toHaveURL(/\/admin\/users\/.+/);
         await expect(page.locator('body')).not.toContainText('Whoops');
         await expect(page.locator('body')).not.toContainText('500');
@@ -89,7 +97,9 @@ test.describe('Admin import', () => {
     test('submitting import form without a running import redirects back', async ({ page }) => {
         await page.goto('/admin/import');
         await page.selectOption('select[name="import_type"]', '5000');
-        await page.click('button[type=submit]');
+        // Target the submit button that is inside the form containing the import_type select
+        const triggerForm = page.locator('form').filter({ has: page.locator('select[name="import_type"]') });
+        await triggerForm.locator('button[type=submit]').click();
         // Should redirect back to import index (success or "already running" flash)
         await expect(page).toHaveURL(/\/admin\/import/);
         await expect(page.locator('body')).not.toContainText('Whoops');
@@ -101,7 +111,7 @@ test.describe('Admin pricing', () => {
     test('pricing management page loads', async ({ page }) => {
         await page.goto('/admin/pricing');
         await expect(page.locator('body')).not.toContainText('Whoops');
-        await expect(page.locator('body')).not.toContainText('500');
+        // Page legitimately contains "500 fiches" for Pro plan — only assert no error page
     });
 });
 

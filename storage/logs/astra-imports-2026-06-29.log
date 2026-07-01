@@ -1,0 +1,27 @@
+[2026-06-29 14:09:53] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:09:53] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:09:53] production.INFO: [5000] Aucun nouveau fichier à traiter.  
+[2026-06-29 14:11:55] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:11:55] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:11:55] production.INFO: [5000] Aucun nouveau fichier à traiter.  
+[2026-06-29 14:15:58] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:15:58] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:15:58] production.INFO: [5000] Aucun nouveau fichier à traiter.  
+[2026-06-29 14:22:20] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:22:20] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:22:20] production.INFO: [5000] Aucun nouveau fichier à traiter.  
+[2026-06-29 14:25:14] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:25:14] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:25:14] production.INFO: [5000] Aucun nouveau fichier à traiter.  
+[2026-06-29 14:28:32] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:28:32] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:28:32] production.INFO: [5000] Aucun nouveau fichier à traiter.  
+[2026-06-29 14:31:27] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:31:27] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:31:27] production.INFO: [5000] Aucun nouveau fichier à traiter.  
+[2026-06-29 14:33:12] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:33:12] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:33:12] production.INFO: [5000] Aucun nouveau fichier à traiter.  
+[2026-06-29 14:33:27] production.INFO: [5000] Démarrage import newsletter {"directory":""} 
+[2026-06-29 14:33:27] production.WARNING: [5000] Répertoire introuvable {"directory":""} 
+[2026-06-29 14:33:27] production.INFO: [5000] Aucun nouveau fichier à traiter.  

@@ -82,13 +82,13 @@
         <x-vehicle-card title="Motorisation" icon="⚡" :public="true">
             <x-slot name="rows">
                 <x-data-row label="{{ __('app.vehicle.energie') }}"
-                             :value="App\Models\VehicleTranslation::translate('energie', $vehicle->energie ?? '', app()->getLocale())" />
+                             :value="$vehicle->energie ? App\Models\VehicleTranslation::translate('energie', $vehicle->energie, app()->getLocale()) : null" />
                 <x-data-row label="{{ __('app.vehicle.puissance_kw') }}"
                              :value="$vehicle->puissance_kw ? $vehicle->puissance_kw . ' kW (' . $vehicle->puissance_cv . ' CV)' : null" />
                 <x-data-row label="{{ __('app.vehicle.cylindree') }}"
                              :value="$vehicle->cylindree ? number_format($vehicle->cylindree, 0, '.', chr(39)) . ' cm³' : null" />
                 <x-data-row label="{{ __('app.vehicle.boite_vitesse') }}"
-                             :value="App\Models\VehicleTranslation::translate('boite_vitesse', $vehicle->boite_vitesse ?? '', app()->getLocale())" />
+                             :value="$vehicle->boite_vitesse ? App\Models\VehicleTranslation::translate('boite_vitesse', $vehicle->boite_vitesse, app()->getLocale()) : null" />
             </x-slot>
         </x-vehicle-card>
 

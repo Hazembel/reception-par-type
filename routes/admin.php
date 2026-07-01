@@ -27,11 +27,14 @@ Route::prefix('admin')
         Route::get('/', fn () => redirect()->route('admin.dashboard'))->name('home');
 
         // ── Tarifs (Module 8) ─────────────────────────────────────────────────
-        Route::get('/pricing',         [AdminPricingController::class, 'index'])->name('pricing.index');
-        Route::post('/pricing/{plan}', [AdminPricingController::class, 'update'])->name('pricing.update');
+        Route::get('/pricing',              [AdminPricingController::class, 'index'])->name('pricing.index');
+        Route::post('/pricing',             [AdminPricingController::class, 'store'])->name('pricing.store');
+        Route::post('/pricing/{plan}',      [AdminPricingController::class, 'update'])->name('pricing.update');
+        Route::delete('/pricing/{plan}',    [AdminPricingController::class, 'destroy'])->name('pricing.destroy');
 
         // ── Utilisateurs (Module 8) ───────────────────────────────────────────
         Route::get('/users',               [AdminUserController::class, 'index'])->name('users.index');
+        Route::get('/users/admins',        [AdminUserController::class, 'admins'])->name('users.admins');
         Route::get('/users/{user}',        [AdminUserController::class, 'show'])->name('users.show');
         Route::post('/users/{user}/grant', [AdminUserController::class, 'grant'])->name('users.grant');
 

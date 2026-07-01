@@ -12,21 +12,13 @@
     'value' => null,
     'mono'  => false,
 ])
+@php $hasValue = $value !== null && $value !== ''; @endphp
 
 <div class="flex items-center justify-between px-5 py-3 gap-4">
-    {{-- Libellé --}}
     <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
-        {{ $label }}
+        {!! $label !!}
     </dt>
-
-    {{-- Valeur --}}
-    <dd class="
-        text-sm text-right
-        {{ $value !== null
-            ? 'text-slate-900 dark:text-white font-medium'
-            : 'text-slate-300 dark:text-slate-600' }}
-        {{ $mono ? 'font-mono text-xs tracking-wide' : '' }}
-    ">
-        {{ $value ?? '—' }}
+    <dd class="text-sm text-right {{ $hasValue ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-300 dark:text-slate-600' }} {{ $mono ? 'font-mono text-xs tracking-wide' : '' }}">
+        {{ $hasValue ? $value : '—' }}
     </dd>
 </div>

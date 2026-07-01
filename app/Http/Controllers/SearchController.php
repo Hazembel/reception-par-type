@@ -76,16 +76,23 @@ class SearchController extends BaseController
 
             default:
                 // ── RECHERCHE TEXTE (marque / modèle / variante) ───────────────
-                // Les bindings PDO protègent contre les injections SQL.
-                $terms = explode(' ', trim($query));
-                foreach ($terms as $term) {
-                    if (mb_strlen($term) >= 2) {
-                        $builder->where(function ($q) use ($term) {
-                            $q->where('marque',    'like', '%' . $term . '%')
-                              ->orWhere('modele',   'like', '%' . $term . '%')
-                              ->orWhere('variante', 'like', '%' . $term . '%');
-                        });
-                    }
+                // FULLTEXT MATCH...AGAINST uses the ft_marque_modele_variante index
+                // instead of LIKE '%term%' which forces a full table scan on 220k rows.
+                // Boolean mode: appends * for prefix matching (BMW → BMW, BMWX3, etc.)
+                $safeTerms = array_filter(
+                    array_map('trim', explode(' ', $query)),
+                    fn ($t) => mb_strlen($t) >= 2
+                );
+
+                if (!empty($safeTerms)) {
+                    $booleanQuery = implode(' ', array_map(
+                        fn ($t) => '+' . preg_replace('/[+\-><()~*"@]+/', '', $t) . '*',
+                        $safeTerms
+                    ));
+                    $builder->whereRaw(
+                        'MATCH(marque, modele, variante) AGAINST(? IN BOOLEAN MODE)',
+                        [$booleanQuery]
+                    );
                 }
                 break;
         }
@@ -146,12 +153,13 @@ class SearchController extends BaseController
             return response()->json([]);
         }
 
+        $safeTerm = preg_replace('/[+\-><()~*"@]+/', '', $term);
         $suggestions = Vehicle::active()
             ->select(['marque', 'modele'])
-            ->where(function ($q) use ($term) {
-                $q->where('marque', 'like', $term . '%')
-                  ->orWhere('modele', 'like', '%' . $term . '%');
-            })
+            ->whereRaw(
+                'MATCH(marque, modele, variante) AGAINST(? IN BOOLEAN MODE)',
+                [$safeTerm . '*']
+            )
             ->distinct()
             ->limit(8)
             ->get()

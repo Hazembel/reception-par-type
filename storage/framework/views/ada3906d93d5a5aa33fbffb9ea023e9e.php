@@ -28,6 +28,17 @@
             </div>
 
             
+            <?php if(session('status')): ?>
+                <div class="mb-5 px-3.5 py-2.5 rounded-lg
+                            bg-emerald-50 dark:bg-emerald-900/20
+                            border border-emerald-200 dark:border-emerald-800/40
+                            text-sm text-emerald-700 dark:text-emerald-400 text-center">
+                    <?php echo e(session('status')); ?>
+
+                </div>
+            <?php endif; ?>
+
+            
             <?php if($errors->any()): ?>
                 <div class="mb-5 px-3.5 py-2.5 rounded-lg
                             bg-red-50 dark:bg-red-900/20
@@ -133,7 +144,7 @@ unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
 
-                <div class="flex items-center mb-6">
+                <div class="flex items-center justify-between mb-6">
                     <label class="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                         <input
                             id="remember"
@@ -143,6 +154,10 @@ unset($__errorArgs, $__bag); ?>
                         >
                         <span><?php echo e(__('app.nav.remember_me')); ?></span>
                     </label>
+                    <a href="<?php echo e(route('password.request', ['locale' => app()->getLocale()])); ?>"
+                       class="text-xs text-blue-600 dark:text-astra hover:underline">
+                        Mot de passe oublié ?
+                    </a>
                 </div>
 
                 
@@ -156,6 +171,11 @@ unset($__errorArgs, $__bag); ?>
 
                 </button>
             </form>
+
+            <p class="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
+                Pas encore de compte ?
+                <a href="<?php echo e(route('register', ['locale' => app()->getLocale()])); ?>" class="font-medium text-blue-600 dark:text-astra hover:underline">Créer un compte</a>
+            </p>
 
         </div>
     </div>

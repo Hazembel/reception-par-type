@@ -45,6 +45,7 @@ class AdminUserController extends BaseController
         $query = User::query()
             ->select(['id', 'name', 'email', 'email_verified_at', 'subscription_level',
                       'web_tokens_balance', 'web_monthly_counter', 'subscribed_until', 'created_at'])
+            ->where('subscription_level', '!=', User::ADMIN_LEVEL) // Exclure les admins
             ->withTrashed(); // Inclut les comptes supprimés pour l'audit
 
         // Recherche par nom ou email
@@ -55,18 +56,18 @@ class AdminUserController extends BaseController
             });
         }
 
-        // Filtre par niveau
-        if ($level !== null && $level !== '') {
+        // Filtre par niveau (niveau 8 exclu — ce sont les admins)
+        if ($level !== null && $level !== '' && (int) $level !== User::ADMIN_LEVEL) {
             $query->where('subscription_level', (int) $level);
         }
 
         $users = $query->orderBy($sort, $dir)->paginate(25)->withQueryString();
 
-        // Statistiques de la page pour l'en-tête
+        // Statistiques de la page pour l'en-tête (clients uniquement, hors admins)
         $stats = [
-            'total'    => User::count(),
-            'verified' => User::whereNotNull('email_verified_at')->count(),
-            'active'   => User::where('subscribed_until', '>', now())->count(),
+            'total'    => User::where('subscription_level', '!=', User::ADMIN_LEVEL)->count(),
+            'verified' => User::where('subscription_level', '!=', User::ADMIN_LEVEL)->whereNotNull('email_verified_at')->count(),
+            'active'   => User::where('subscription_level', '!=', User::ADMIN_LEVEL)->where('subscribed_until', '>', now())->count(),
         ];
 
         $plans = PricingPlan::allCached()->keyBy('level');
@@ -80,12 +81,54 @@ class AdminUserController extends BaseController
     }
 
     /**
+     * GET /admin/users/admins
+     * Liste des comptes administrateurs (niveau 8).
+     */
+    public function admins(Request $request): View
+    {
+        $this->authorize('viewAny', User::class);
+
+        $search = trim($request->input('q', ''));
+
+        $query = User::query()
+            ->select(['id', 'name', 'email', 'email_verified_at', 'subscription_level',
+                      'web_tokens_balance', 'web_monthly_counter', 'subscribed_until', 'created_at'])
+            ->where('subscription_level', User::ADMIN_LEVEL)
+            ->withTrashed();
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name',  'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+
+        $users = $query->orderBy('created_at', 'desc')->paginate(25)->withQueryString();
+        $sort  = 'created_at';
+        $dir   = 'desc';
+        $level = (string) User::ADMIN_LEVEL;
+        $stats = [
+            'total'    => User::where('subscription_level', User::ADMIN_LEVEL)->count(),
+            'verified' => User::where('subscription_level', User::ADMIN_LEVEL)->whereNotNull('email_verified_at')->count(),
+            'active'   => 0,
+        ];
+        $plans = PricingPlan::allCached()->keyBy('level');
+
+        return $this->renderView(
+            'admin.users.index',
+            compact('users', 'search', 'level', 'sort', 'dir', 'stats', 'plans'),
+            'Administrateurs | Admin',
+            ''
+        );
+    }
+
+    /**
      * GET /admin/users/{user}
      * Fiche détaillée d'un utilisateur.
      */
     public function show(User $user): View
     {
-        $this->authorize('grantAccess', $user);
+        $this->authorize('viewAny', User::class);
 
         $plans = PricingPlan::allCached();
 

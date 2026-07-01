@@ -1,9 +1,9 @@
 {{-- Vue : admin/users/index — Liste clients (Helper List PrestaShop) --}}
 @extends('admin.layouts.prestashop')
 
-@section('page_title', 'Clients')
-@section('title_icon', '👥')
-@section('breadcrumb')<span>Clients</span>@endsection
+@section('page_title', $level === '8' ? 'Administrateurs' : 'Clients')
+@section('title_icon', $level === '8' ? '🔑' : '👥')
+@section('breadcrumb')<span>{{ $level === '8' ? 'Administrateurs' : 'Clients' }}</span>@endsection
 
 @section('content')
 
@@ -52,7 +52,7 @@
 
 <div class="ps-panel">
     <div class="ps-panel-header">
-        <span class="ps-icon">📋</span> Liste des clients
+        <span class="ps-icon">📋</span> {{ $level === '8' ? 'Liste des administrateurs' : 'Liste des clients' }}
         <div class="ps-panel-tools"><span class="ps-badge ps-badge-muted">{{ $users->total() }} résultat(s)</span></div>
     </div>
     <div class="ps-panel-body flush">

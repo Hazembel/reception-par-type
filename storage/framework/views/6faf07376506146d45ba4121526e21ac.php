@@ -1,6 +1,6 @@
-<?php $__env->startSection('page_title', 'Clients'); ?>
-<?php $__env->startSection('title_icon', '👥'); ?>
-<?php $__env->startSection('breadcrumb'); ?><span>Clients</span><?php $__env->stopSection(); ?>
+<?php $__env->startSection('page_title', $level === '8' ? 'Administrateurs' : 'Clients'); ?>
+<?php $__env->startSection('title_icon', $level === '8' ? '🔑' : '👥'); ?>
+<?php $__env->startSection('breadcrumb'); ?><span><?php echo e($level === '8' ? 'Administrateurs' : 'Clients'); ?></span><?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
 
@@ -50,7 +50,8 @@
 
 <div class="ps-panel">
     <div class="ps-panel-header">
-        <span class="ps-icon">📋</span> Liste des clients
+        <span class="ps-icon">📋</span> <?php echo e($level === '8' ? 'Liste des administrateurs' : 'Liste des clients'); ?>
+
         <div class="ps-panel-tools"><span class="ps-badge ps-badge-muted"><?php echo e($users->total()); ?> résultat(s)</span></div>
     </div>
     <div class="ps-panel-body flush">

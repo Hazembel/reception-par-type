@@ -428,7 +428,56 @@
                 <a href="<?php echo e(url('/fr')); ?>" target="_blank" class="ps-header-btn">
                     <span>🔗</span> Voir le site
                 </a>
-                <div class="ps-avatar"><?php echo e(strtoupper(substr(auth()->user()->name ?? 'A', 0, 1))); ?></div>
+
+                
+                <div x-data="{ open: false }" style="position:relative">
+                    <div class="ps-avatar"
+                         x-on:click="open = !open"
+                         x-on:click.outside="open = false"
+                         style="cursor:pointer;user-select:none"
+                         title="<?php echo e(auth()->user()->name); ?>">
+                        <?php echo e(strtoupper(substr(auth()->user()->name ?? 'A', 0, 1))); ?>
+
+                    </div>
+
+                    <div x-show="open" x-cloak
+                         style="position:absolute;top:calc(100% + 10px);right:0;min-width:220px;
+                                background:#fff;border:1px solid var(--ps-border);border-radius:6px;
+                                box-shadow:0 6px 24px rgba(0,0,0,.13);z-index:200;overflow:hidden">
+
+                        
+                        <div style="padding:14px 16px;border-bottom:1px solid var(--ps-border);background:#fafbfc">
+                            <div style="font-weight:700;font-size:13px;color:var(--ps-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                                <?php echo e(auth()->user()->name); ?>
+
+                            </div>
+                            <div style="font-size:11.5px;color:var(--ps-text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                                <?php echo e(auth()->user()->email); ?>
+
+                            </div>
+                        </div>
+
+                        
+                        <div style="padding:6px 0">
+                            <a href="<?php echo e(route('account.profile.show', ['locale' => 'fr'])); ?>"
+                               style="display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:var(--ps-text);text-decoration:none;transition:background .12s"
+                               onmouseover="this.style.background='#f1f1f1'" onmouseout="this.style.background=''">
+                                <span>👤</span> Mon profil
+                            </a>
+                            <div style="height:1px;background:var(--ps-border);margin:4px 0"></div>
+                            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                <?php echo csrf_field(); ?>
+                                <button type="submit"
+                                        style="display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;
+                                               color:#d63333;background:none;border:none;cursor:pointer;width:100%;font-family:inherit;
+                                               transition:background .12s"
+                                        onmouseover="this.style.background='#fff5f5'" onmouseout="this.style.background=''">
+                                    <span>🚪</span> Déconnexion
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 

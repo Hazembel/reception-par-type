@@ -75,15 +75,17 @@ test.describe('Legal pages', () => {
     }
 });
 
-test.describe('Disabled routes', () => {
-    test('/register returns 404', async ({ page }) => {
+test.describe('Auth routes are enabled', () => {
+    test('/register returns 200', async ({ page }) => {
         const response = await page.goto('/fr/register');
-        expect(response?.status()).toBe(404);
+        expect(response?.status()).toBe(200);
+        await expect(page.locator('body')).not.toContainText('Whoops');
     });
 
-    test('/password/reset returns 404', async ({ page }) => {
+    test('/password/reset returns 200', async ({ page }) => {
         const response = await page.goto('/fr/password/reset');
-        expect(response?.status()).toBe(404);
+        expect(response?.status()).toBe(200);
+        await expect(page.locator('body')).not.toContainText('Whoops');
     });
 });
 

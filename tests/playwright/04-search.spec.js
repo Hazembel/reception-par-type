@@ -23,7 +23,7 @@ test.describe('Search page', () => {
 
         await page.waitForLoadState('networkidle');
         await expect(page.locator('body')).not.toContainText('Whoops');
-        await expect(page.locator('body')).not.toContainText('500');
+        // Note: vehicle codes in results legitimately contain "500" — don't check for it
         // Either shows results table or "no results" message
         const body = await page.textContent('body');
         expect(body?.length).toBeGreaterThan(200);

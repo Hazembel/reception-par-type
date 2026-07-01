@@ -1,0 +1,14 @@
+[2026-07-01 10:16:10] production.INFO: Commande astra:import déclenchée {"type":"emissions","force":true,"specific_file":null,"triggered_by":"scheduler"} 
+[2026-07-01 10:16:13] production.INFO: [EMISSIONS] Démarrage import émissions {"file":"D:/DiskFiles/Projects/Web/upwork_Invoice_Ninja/reception-par-type/storage/app/astra/2000/emissionen.txt"} 
+[2026-07-01 10:16:35] production.CRITICAL: [EMISSIONS] Job échoué définitivement {"file":"D:/DiskFiles/Projects/Web/upwork_Invoice_Ninja/reception-par-type/storage/app/astra/2000/emissionen.txt","exception":"SQLSTATE[HY000] [2002] A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond (Connection: mysql, SQL: select exists(select * from `imports_log` where `file_hash` = 0dc8851e14390295c2b549979072d6211adb85c2f27928ba351bb34e237b4d82 and `status` in (completed, partial)) as `exists`)"} 
+[2026-07-01 10:34:40] production.INFO: Commande astra:import déclenchée {"type":"emissions","force":true,"specific_file":null,"triggered_by":"scheduler"} 
+[2026-07-01 10:34:40] production.INFO: [EMISSIONS] Démarrage import émissions {"file":"D:/DiskFiles/Projects/Web/upwork_Invoice_Ninja/reception-par-type/storage/app/astra/2000/emissionen.txt"} 
+[2026-07-01 10:34:42] production.INFO: [EMISSIONS] En-têtes détectés {"separator":"TAB","columns":65} 
+[2026-07-01 12:11:35] production.INFO: [EMISSIONS] Progression {"lines":50000,"updated":41573,"memory":"30 Mo"} 
+[2026-07-01 13:50:39] production.INFO: [EMISSIONS] Progression {"lines":100000,"updated":84426,"memory":"30 Mo"} 
+[2026-07-01 14:16:28] production.INFO: Commande astra:import déclenchée {"type":"emissions","force":true,"specific_file":null,"triggered_by":"scheduler"} 
+[2026-07-01 14:16:28] production.INFO: [EMISSIONS] Démarrage import émissions {"file":"D:/DiskFiles/Projects/Web/upwork_Invoice_Ninja/reception-par-type/storage/app/astra/2000/emissionen.txt"} 
+[2026-07-01 14:16:29] production.INFO: [EMISSIONS] En-têtes détectés {"separator":"TAB","columns":65} 
+[2026-07-01 14:17:24] production.INFO: [EMISSIONS] Progression {"lines":50000,"updated":41573,"memory":"62 Mo"} 
+[2026-07-01 14:18:36] production.INFO: [EMISSIONS] Progression {"lines":100000,"updated":84426,"memory":"92 Mo"} 
+[2026-07-01 14:20:05] production.INFO: [EMISSIONS] Progression {"lines":150000,"updated":126389,"memory":"94 Mo"} 

@@ -32,7 +32,7 @@
         <li><a href="{{ route('admin.users.index') }}" class="ps-nav-link {{ $is('admin.users.index') || $is('admin.users.show') ? 'active' : '' }}">
             <span class="ps-label">Liste des clients</span>
         </a></li>
-        <li><a href="{{ route('admin.users.index', ['level' => 8]) }}" class="ps-nav-link">
+        <li><a href="{{ route('admin.users.admins') }}" class="ps-nav-link {{ $is('admin.users.admins') ? 'active' : '' }}">
             <span class="ps-label">Administrateurs</span>
         </a></li>
     </ul>

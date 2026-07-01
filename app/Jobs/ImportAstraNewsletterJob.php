@@ -63,7 +63,7 @@ class ImportAstraNewsletterJob implements ShouldQueue
          * Évite l'accumulation sur le disque ; les fichiers traités avec succès
          * sont de toute façon protégés contre le retraitement par leur hash.
          */
-        private readonly bool $deleteAfterImport = true
+        private readonly bool $deleteAfterImport = false
     ) {}
 
     // ── Exécution principale ──────────────────────────────────────────────────

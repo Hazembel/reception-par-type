@@ -28,7 +28,7 @@
         <li><a href="<?php echo e(route('admin.users.index')); ?>" class="ps-nav-link <?php echo e($is('admin.users.index') || $is('admin.users.show') ? 'active' : ''); ?>">
             <span class="ps-label">Liste des clients</span>
         </a></li>
-        <li><a href="<?php echo e(route('admin.users.index', ['level' => 8])); ?>" class="ps-nav-link">
+        <li><a href="<?php echo e(route('admin.users.admins')); ?>" class="ps-nav-link <?php echo e($is('admin.users.admins') ? 'active' : ''); ?>">
             <span class="ps-label">Administrateurs</span>
         </a></li>
     </ul>
@@ -77,6 +77,14 @@
 
 
 <div class="ps-nav-section">Paramètres</div>
+
+<div class="ps-nav-item <?php echo e($is('admin.settings.*') ? 'active' : ''); ?>">
+    <a href="<?php echo e(route('admin.settings.index')); ?>" class="ps-nav-link">
+        <span class="ps-icon">⚙️</span>
+        <span class="ps-label">Paramètres</span>
+    </a>
+</div>
+
 <div class="ps-nav-item">
     <a href="<?php echo e(url('/fr')); ?>" target="_blank" class="ps-nav-link">
         <span class="ps-icon">🌐</span>

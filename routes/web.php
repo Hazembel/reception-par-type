@@ -10,6 +10,9 @@ use App\Http\Controllers\PayPalWebhookController;
 use App\Http\Controllers\Account\AffiliateController;
 use App\Http\Controllers\Account\InvoiceController;
 use App\Http\Controllers\Account\ProfileController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\CompareController;
 use Illuminate\Support\Facades\Route;
@@ -88,9 +91,17 @@ Route::prefix('{locale}')
         // ── Pages d'authentification ─────────────────────────────────────────
         Route::get('/login',  [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
-        Route::get('/register',       fn () => abort(404))->name('register');
-        Route::get('/password/reset', fn () => abort(404))->name('password.request');
+        Route::get('/register',  [RegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [RegisterController::class, 'register']);
+        Route::get('/password/reset',         [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/password/email',        [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+        Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/password/reset',        [ResetPasswordController::class, 'reset'])->name('password.update');
         Route::get('/email/verify', fn () => view('auth.verify-email'))->middleware('auth')->name('verification.notice');
+        Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+            $request->user()->sendEmailVerificationNotification();
+            return back()->with('resent', true);
+        })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
         // ── Pages légales (LPD / RGPD) ────────────────────────────────────────
         Route::get('/mentions-legales', fn () => view('legal.mentions', ['meta_title' => 'Mentions Légales', 'meta_description' => '']))->name('legal');

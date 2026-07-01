@@ -8,6 +8,7 @@ use App\Listeners\RecordAffiliateCommission;
 use App\Listeners\CreateInvoiceOnPayment;
 use App\Models\User;
 use App\Policies\UserManagementPolicy;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -37,5 +38,14 @@ class AppServiceProvider extends ServiceProvider
 
         // ── Policies ──────────────────────────────────────────────────────────
         Gate::policy(User::class, UserManagementPolicy::class);
+
+        // ── Password reset URL — inject {locale} required by our route prefix ─
+        // Laravel's built-in ResetPassword notification calls route('password.reset')
+        // without locale, causing UrlGenerationException. We override it globally.
+        ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
+            $locale = config('app.locale', 'fr');
+            return route('password.reset', ['locale' => $locale, 'token' => $token])
+                 . '?email=' . urlencode($notifiable->getEmailForPasswordReset());
+        });
     }
 }

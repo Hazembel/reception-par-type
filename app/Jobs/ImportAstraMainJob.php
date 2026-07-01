@@ -82,7 +82,7 @@ class ImportAstraMainJob implements ShouldQueue
          * fichier TARGA de 300 Mo ne doit jamais rester sur le disque après
          * import. Mettre à false uniquement pour du débogage manuel.
          */
-        private readonly bool $deleteAfterImport = true,
+        private readonly bool $deleteAfterImport = false,
         /**
          * Type de véhicule porté par le fichier traité :
          *   - Vehicle::TYPE_CAR        pour TG-Automobil.txt

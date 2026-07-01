@@ -265,15 +265,59 @@
 
                 {{-- CTA Auth --}}
                 @auth
-                    <a href="{{ route('account.affiliate.index', ['locale' => app()->getLocale()]) }}"
-                       class="
-                           px-3.5 py-1.5 rounded-lg text-sm font-medium
-                           text-slate-700 dark:text-slate-200
-                           hover:bg-black/5 dark:hover:bg-white/10
-                           transition-all duration-150
-                       ">
-                        {{ __('app.nav.profile') }}
-                    </a>
+                    @if(auth()->user()->isAdmin())
+                        {{-- Admin : dropdown avec accès dashboard + profil --}}
+                        <div x-data="{ open: false }" class="relative">
+                            <button
+                                x-on:click="open = !open"
+                                x-on:click.outside="open = false"
+                                class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium
+                                       text-slate-700 dark:text-slate-200
+                                       hover:bg-black/5 dark:hover:bg-white/10
+                                       transition-all duration-150">
+                                {{ __('app.nav.profile') }}
+                                <svg class="w-3.5 h-3.5 opacity-60 transition-transform duration-150"
+                                     :class="{ 'rotate-180': open }"
+                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+
+                            <div x-show="open" x-cloak x-transition
+                                 class="absolute right-0 mt-2 w-52 rounded-xl
+                                        bg-white dark:bg-marine-900
+                                        border border-slate-200 dark:border-white/10
+                                        shadow-xl shadow-slate-900/10
+                                        py-1.5 z-50">
+                                <a href="{{ route('admin.dashboard') }}"
+                                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm
+                                          text-slate-700 dark:text-slate-200
+                                          hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                    <svg class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                    </svg>
+                                    Tableau de bord
+                                </a>
+                                <a href="{{ route('account.profile.show', ['locale' => app()->getLocale()]) }}"
+                                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm
+                                          text-slate-700 dark:text-slate-200
+                                          hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                    <svg class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+                                    </svg>
+                                    Modifier mon profil
+                                </a>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('account.profile.show', ['locale' => app()->getLocale()]) }}"
+                           class="px-3.5 py-1.5 rounded-lg text-sm font-medium
+                                  text-slate-700 dark:text-slate-200
+                                  hover:bg-black/5 dark:hover:bg-white/10
+                                  transition-all duration-150">
+                            {{ __('app.nav.profile') }}
+                        </a>
+                    @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"

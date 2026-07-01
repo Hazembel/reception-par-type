@@ -60,7 +60,7 @@ class ImportAstraEmissionsJob implements ShouldQueue
          * Supprime le fichier source après traitement (succès OU échec).
          * Protège l'espace disque limité (30 Go).
          */
-        private readonly bool $deleteAfterImport = true
+        private readonly bool $deleteAfterImport = false
     ) {}
 
     public function handle(): void
@@ -188,7 +188,9 @@ class ImportAstraEmissionsJob implements ShouldQueue
                             'updated' => $stats['lines_updated'],
                             'memory'  => round(memory_get_usage(true) / 1_048_576) . ' Mo',
                         ]);
-                        $this->job?->ping();
+                        if ($this->job && method_exists($this->job, 'ping')) {
+                            $this->job->ping();
+                        }
                     }
                 }
             }
@@ -244,8 +246,7 @@ class ImportAstraEmissionsJob implements ShouldQueue
             return 0;
         }
 
-        // Dé-doublonnage interne au chunk : si le même TG apparaît plusieurs fois,
-        // la dernière occurrence l'emporte (merge des champs).
+        // De-duplicate: if same TG appears multiple times, merge (last value wins).
         $byTg = [];
         foreach ($chunk as $row) {
             $tg = $row['numero_tg'];
@@ -254,43 +255,53 @@ class ImportAstraEmissionsJob implements ShouldQueue
 
         $tgNumbers = array_keys($byTg);
 
-        // Limiter aux véhicules réellement présents (évite des UPDATE inutiles).
-        $existingTgs = Vehicle::whereIn('numero_tg', $tgNumbers)
-            ->pluck('numero_tg')
-            ->all();
+        // All fields the emissions file can contribute.
+        $fields = [
+            'co2', 'code_emissions', 'pollution_norm',
+            'energie', 'boite_vitesse', 'cylindree', 'puissance_kw',
+            'poids_vide', 'poids_total',
+        ];
 
-        if (empty($existingTgs)) {
+        // Build one single bulk UPDATE with CASE WHEN per field.
+        // This replaces N individual UPDATE queries with 1 query per chunk.
+        $setClauses = [];
+        $bindings   = [];
+
+        foreach ($fields as $field) {
+            $cases    = [];
+            $hasValue = false;
+
+            foreach ($byTg as $tg => $data) {
+                if (isset($data[$field]) && $data[$field] !== null && $data[$field] !== '') {
+                    $cases[]  = 'WHEN ? THEN ?';
+                    $bindings[] = $tg;
+                    $bindings[] = $data[$field];
+                    $hasValue = true;
+                }
+            }
+
+            if ($hasValue) {
+                $setClauses[] = "`{$field}` = CASE `numero_tg` " . implode(' ', $cases) . " ELSE `{$field}` END";
+            }
+        }
+
+        if (empty($setClauses)) {
             return 0;
         }
 
-        $updated = 0;
+        $setClauses[] = '`updated_at` = NOW()';
+        $placeholders = implode(',', array_fill(0, count($tgNumbers), '?'));
 
-        DB::transaction(function () use ($existingTgs, $byTg, &$updated) {
-            foreach ($existingTgs as $tg) {
-                $data = $byTg[$tg];
+        foreach ($tgNumbers as $tg) {
+            $bindings[] = $tg;
+        }
 
-                // Ne conserver que les colonnes d'émission présentes et non nulles.
-                $payload = array_filter(
-                    [
-                        'co2'            => $data['co2']            ?? null,
-                        'pollution_norm' => $data['pollution_norm'] ?? null,
-                        'code_emissions' => $data['code_emissions'] ?? null,
-                    ],
-                    static fn ($v) => $v !== null
-                );
+        $sql = 'UPDATE `vehicles` SET ' . implode(', ', $setClauses)
+             . " WHERE `numero_tg` IN ({$placeholders})";
 
-                if (empty($payload)) {
-                    continue;
-                }
+        DB::statement($sql, $bindings);
 
-                $payload['updated_at'] = now();
-
-                Vehicle::where('numero_tg', $tg)->update($payload);
-                $updated++;
-            }
-        });
-
-        return $updated;
+        return count($tgNumbers);
     }
 
     /**
