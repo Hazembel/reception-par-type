@@ -178,7 +178,10 @@ class ImportAstraVerbrauchJob implements ShouldQueue
             ]);
             $importLog->markAsFinished();
 
-            Log::channel('imports')->info('[VERBRAUCH] Import terminé', $stats);
+            try {
+                Log::channel('imports')->info('[VERBRAUCH] Import terminé', $stats);
+            } catch (\Throwable) {
+            }
 
         } catch (\Throwable $e) {
             $importLog->markAsFailed($e->getMessage(), $errorDetails);
