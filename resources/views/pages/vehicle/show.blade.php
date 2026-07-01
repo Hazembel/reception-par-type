@@ -118,11 +118,14 @@
         <x-vehicle-card title="Émissions" icon="🌿" :public="true">
             <x-slot name="rows">
                 <x-data-row label="{{ __('app.vehicle.co2') }}"
-                             :value="$vehicle->co2 !== null
-                                 ? ($vehicle->co2 === 0 ? '0 g/km (ZEV)' : $vehicle->co2 . ' g/km')
-                                 : null" />
+                             :value="$vehicle->co2 !== null && $vehicle->co2 > 0
+                                 ? $vehicle->co2 . ' g/km'
+                                 : ($vehicle->co2 === 0 && $vehicle->isElectric() ? '0 g/km (ZEV)' : null)" />
                 <x-data-row label="{{ __('app.vehicle.code_emissions') }}"
-                             :value="$vehicle->code_emissions" />
+                             :value="$vehicle->pollution_norm
+                                 ?: ($vehicle->code_emissions
+                                     ? (App\Models\VehicleTranslation::translate('code_emissions', $vehicle->code_emissions, app()->getLocale()) ?? $vehicle->code_emissions)
+                                     : null)" />
             </x-slot>
         </x-vehicle-card>
 

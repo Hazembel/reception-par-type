@@ -273,11 +273,11 @@ class Vehicle extends Model
 
     /**
      * Indique si le véhicule est 100% électrique.
-     * Code énergie ASTRA "14" = électrique.
+     * Codes énergie ASTRA : '03'=Électrique (numeric), 'E'=Électrique (letter), '14'=Plug-in hybrid treated as ZEV when co2=0.
      */
     public function isElectric(): bool
     {
-        return $this->energie === '14';
+        return in_array($this->energie, ['03', 'E', '14'], true);
     }
 
     /** Indique si la fiche concerne une moto. */

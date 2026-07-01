@@ -25,6 +25,7 @@ class VehicleTranslationSeeder extends Seeder
 
         $this->seedEnergie();
         $this->seedBoiteVitesse();
+        $this->seedCodeEmissions();
 
         $this->command->info('✅  VehicleTranslation seeded: ' . VehicleTranslation::count() . ' rows.');
     }
@@ -117,6 +118,32 @@ class VehicleTranslationSeeder extends Seeder
             VehicleTranslation::updateOrCreate(
                 ['category' => 'boite_vitesse', 'code' => $row['code']],
                 array_merge($row, ['category' => 'boite_vitesse'])
+            );
+        }
+    }
+
+    // ── Code émissions / Abgascode ───────────────────────────────────────────
+
+    private function seedCodeEmissions(): void
+    {
+        $rows = [
+            ['code' => 'AJAM',        'label_fr' => 'Norme suisse (pré-Euro)',  'label_de' => 'Schweizer Norm (vor Euro)',  'label_it' => 'Norma svizzera (pre-Euro)', 'label_en' => 'Swiss standard (pre-Euro)', 'sort_order' => 1],
+            ['code' => 'EURO1',       'label_fr' => 'Euro 1',                  'label_de' => 'Euro 1',                    'label_it' => 'Euro 1',                   'label_en' => 'Euro 1',                   'sort_order' => 10],
+            ['code' => 'EURO2',       'label_fr' => 'Euro 2',                  'label_de' => 'Euro 2',                    'label_it' => 'Euro 2',                   'label_en' => 'Euro 2',                   'sort_order' => 11],
+            ['code' => 'EURO3',       'label_fr' => 'Euro 3',                  'label_de' => 'Euro 3',                    'label_it' => 'Euro 3',                   'label_en' => 'Euro 3',                   'sort_order' => 12],
+            ['code' => 'EURO4',       'label_fr' => 'Euro 4',                  'label_de' => 'Euro 4',                    'label_it' => 'Euro 4',                   'label_en' => 'Euro 4',                   'sort_order' => 13],
+            ['code' => 'EURO5',       'label_fr' => 'Euro 5',                  'label_de' => 'Euro 5',                    'label_it' => 'Euro 5',                   'label_en' => 'Euro 5',                   'sort_order' => 14],
+            ['code' => 'EURO6',       'label_fr' => 'Euro 6',                  'label_de' => 'Euro 6',                    'label_it' => 'Euro 6',                   'label_en' => 'Euro 6',                   'sort_order' => 15],
+            ['code' => 'EURO6b',      'label_fr' => 'Euro 6b',                 'label_de' => 'Euro 6b',                   'label_it' => 'Euro 6b',                  'label_en' => 'Euro 6b',                  'sort_order' => 16],
+            ['code' => 'EURO6c',      'label_fr' => 'Euro 6c',                 'label_de' => 'Euro 6c',                   'label_it' => 'Euro 6c',                  'label_en' => 'Euro 6c',                  'sort_order' => 17],
+            ['code' => 'EURO6d',      'label_fr' => 'Euro 6d',                 'label_de' => 'Euro 6d',                   'label_it' => 'Euro 6d',                  'label_en' => 'Euro 6d',                  'sort_order' => 18],
+            ['code' => 'EURO6d-temp', 'label_fr' => 'Euro 6d-temp',            'label_de' => 'Euro 6d-temp',              'label_it' => 'Euro 6d-temp',             'label_en' => 'Euro 6d-temp',             'sort_order' => 19],
+        ];
+
+        foreach ($rows as $row) {
+            VehicleTranslation::updateOrCreate(
+                ['category' => 'code_emissions', 'code' => $row['code']],
+                array_merge($row, ['category' => 'code_emissions'])
             );
         }
     }
