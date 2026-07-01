@@ -394,6 +394,13 @@ class AstraFileParser
         self::castIntegers($mapped);
         self::castDecimals($mapped);
 
+        // Zero is meaningless for range and WLTP CO2 — treat as absent.
+        foreach (['autonomie_min', 'autonomie_max', 'co2_wltp'] as $f) {
+            if (isset($mapped[$f]) && $mapped[$f] === 0) {
+                $mapped[$f] = null;
+            }
+        }
+
         // ET_Verbrauch fallback: if ZT combined is null/zero, use ET single-test value.
         if (empty($mapped['consommation_mixte']) && isset($mapped['_et_conso'])) {
             $et = (float) str_replace(',', '.', (string) $mapped['_et_conso']);
