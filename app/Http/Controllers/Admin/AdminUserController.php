@@ -46,7 +46,7 @@ class AdminUserController extends BaseController
 
         $query = User::query()
             ->select(['id', 'name', 'email', 'email_verified_at', 'subscription_level',
-                      'web_tokens_balance', 'web_monthly_counter', 'subscribed_until', 'created_at'])
+                      'web_tokens_balance', 'web_monthly_counter', 'subscribed_until', 'created_at', 'deleted_at'])
             ->where('subscription_level', '!=', User::ADMIN_LEVEL) // Exclure les admins
             ->withTrashed(); // Inclut les comptes supprimés pour l'audit
 
@@ -94,7 +94,7 @@ class AdminUserController extends BaseController
 
         $query = User::query()
             ->select(['id', 'name', 'email', 'email_verified_at', 'subscription_level',
-                      'web_tokens_balance', 'web_monthly_counter', 'subscribed_until', 'created_at'])
+                      'web_tokens_balance', 'web_monthly_counter', 'subscribed_until', 'created_at', 'deleted_at'])
             ->where('subscription_level', User::ADMIN_LEVEL)
             ->withTrashed();
 

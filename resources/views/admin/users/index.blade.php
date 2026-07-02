@@ -1,4 +1,4 @@
-{{-- Vue : admin/users/index — Liste clients (Helper List PrestaShop) --}}
+{{-- Vue : admin/users/index — Liste clients --}}
 @extends('admin.layouts.prestashop')
 
 @section('page_title', $level === '8' ? 'Administrateurs' : 'Clients')
@@ -6,11 +6,6 @@
 @section('breadcrumb')<span>{{ $level === '8' ? 'Administrateurs' : 'Clients' }}</span>@endsection
 
 @section('content')
-
-{{-- Flash --}}
-@if(session('success'))
-<div class="ps-alert ps-alert-success" style="margin-bottom:16px">{{ session('success') }}</div>
-@endif
 
 {{-- KPI résumé --}}
 <div class="ps-kpi-row">
@@ -28,30 +23,30 @@
     </div>
 </div>
 
-{{-- Créer un utilisateur --}}
+{{-- Créer un utilisateur (Alpine collapsible) --}}
 @if($level !== '8')
-<div class="ps-panel">
-    <div class="ps-panel-header" style="cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+<div x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }" class="ps-panel">
+    <div class="ps-panel-header" style="cursor:pointer;user-select:none" @click="open = !open">
         <span class="ps-icon">➕</span> Créer un utilisateur
-        <span class="ps-help" style="margin-left:8px">(cliquez pour ouvrir / fermer)</span>
+        <span class="ps-help" style="margin-left:8px;font-weight:400" x-text="open ? '▲ fermer' : '▼ ouvrir'"></span>
     </div>
-    <div class="ps-panel-body" style="display:none">
+    <div class="ps-panel-body" x-show="open" x-transition style="display:none">
         @if($errors->any())
-        <div class="ps-alert ps-alert-danger" style="margin-bottom:16px">{{ $errors->first() }}</div>
+        <div class="ps-alert ps-alert-danger" style="margin-bottom:14px">{{ $errors->first() }}</div>
         @endif
         <form method="POST" action="{{ route('admin.users.store') }}">
             @csrf
             <div class="ps-grid-2" style="margin-bottom:14px">
                 <div class="ps-form-group">
-                    <label class="ps-label">Nom complet <span style="color:red">*</span></label>
+                    <label class="ps-label">Nom complet <span style="color:var(--ps-danger)">*</span></label>
                     <input type="text" name="name" value="{{ old('name') }}" class="ps-input" placeholder="Jean Dupont" required>
                 </div>
                 <div class="ps-form-group">
-                    <label class="ps-label">Adresse e-mail <span style="color:red">*</span></label>
+                    <label class="ps-label">Adresse e-mail <span style="color:var(--ps-danger)">*</span></label>
                     <input type="email" name="email" value="{{ old('email') }}" class="ps-input" placeholder="jean@exemple.ch" required>
                 </div>
                 <div class="ps-form-group">
-                    <label class="ps-label">Mot de passe <span style="color:red">*</span> <span class="ps-help">(min. 8 caractères)</span></label>
+                    <label class="ps-label">Mot de passe <span style="color:var(--ps-danger)">*</span> <span class="ps-help">(min. 8 car.)</span></label>
                     <input type="password" name="password" class="ps-input" placeholder="••••••••" required>
                 </div>
                 <div class="ps-form-group">
@@ -67,9 +62,7 @@
                     </select>
                 </div>
             </div>
-            <p class="ps-help" style="margin-bottom:12px">
-                ✅ Le compte sera créé avec l'e-mail <strong>pré-vérifié</strong> (pas d'envoi de mail de confirmation).
-            </p>
+            <p class="ps-help" style="margin-bottom:12px">✅ Compte créé avec e-mail <strong>pré-vérifié</strong> — aucun mail envoyé.</p>
             <button type="submit" class="ps-btn ps-btn-primary">Créer le compte</button>
         </form>
     </div>
@@ -117,8 +110,7 @@
                     @foreach([['name','Nom'],['email','E-mail'],['subscription_level','Niveau'],['web_tokens_balance','Jetons'],['created_at','Inscription']] as $th)
                     <th>
                         <a href="{{ request()->fullUrlWithQuery(['sort' => $th[0], 'dir' => $sort === $th[0] && $dir === 'asc' ? 'desc' : 'asc']) }}" style="color:inherit">
-                            {{ $th[1] }}
-                            @if($sort === $th[0]){{ $dir === 'asc' ? ' ▲' : ' ▼' }}@endif
+                            {{ $th[1] }}@if($sort === $th[0]){{ $dir === 'asc' ? ' ▲' : ' ▼' }}@endif
                         </a>
                     </th>
                     @endforeach
@@ -128,7 +120,7 @@
             </thead>
             <tbody>
                 @forelse($users as $user)
-                <tr style="{{ $user->deleted_at ? 'opacity:0.55' : '' }}">
+                <tr style="{{ $user->deleted_at ? 'opacity:.5;background:#fff8f8' : '' }}">
                     <td><strong>{{ $user->name }}</strong></td>
                     <td style="color:var(--ps-text-muted)"><code>{{ $user->email }}</code></td>
                     <td>
@@ -138,34 +130,34 @@
                     </td>
                     <td class="num">{{ number_format($user->web_tokens_balance, 0, '.', '\'') }}</td>
                     <td style="color:var(--ps-text-muted)">{{ $user->created_at->format('d.m.Y') }}</td>
-                    <td>
+                    <td style="white-space:nowrap">
                         @if($user->email_verified_at)
                             <span class="ps-badge ps-badge-success">Vérifié</span>
                         @else
                             <span class="ps-badge ps-badge-warning">Non vérifié</span>
                         @endif
-                        @if($user->deleted_at)<span class="ps-badge ps-badge-danger">Supprimé</span>@endif
+                        @if($user->deleted_at)
+                            <span class="ps-badge ps-badge-danger">Supprimé</span>
+                        @endif
                     </td>
                     <td style="text-align:right;white-space:nowrap">
                         @if($user->deleted_at)
-                            {{-- Restore --}}
-                            <form method="POST" action="{{ route('admin.users.restore', $user->id) }}" style="display:inline">
+                            {{-- Restaurer --}}
+                            <form method="POST" action="{{ route('admin.users.restore', $user->id) }}" style="display:inline"
+                                  x-data
+                                  @submit.prevent="if(confirm('Restaurer le compte de {{ addslashes($user->name) }} ?')) $el.submit()">
                                 @csrf
-                                <button type="submit" class="ps-btn ps-btn-sm ps-btn-success"
-                                    onclick="return confirm('Restaurer le compte de {{ addslashes($user->name) }} ?')">
-                                    Restaurer
-                                </button>
+                                <button type="submit" class="ps-btn ps-btn-sm ps-btn-success">↩ Restaurer</button>
                             </form>
                         @else
                             <a href="{{ route('admin.users.show', $user) }}" class="ps-btn ps-btn-sm">Modifier</a>
                             @if($user->id !== auth()->id() && !$user->isAdmin())
-                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" style="display:inline">
+                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" style="display:inline"
+                                  x-data
+                                  @submit.prevent="if(confirm('Supprimer le compte de {{ addslashes($user->name) }} ?\n(soft delete — récupérable)')) $el.submit()">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="ps-btn ps-btn-sm ps-btn-danger"
-                                    onclick="return confirm('Supprimer le compte de {{ addslashes($user->name) }} ? (soft delete, récupérable)')">
-                                    Supprimer
-                                </button>
+                                <button type="submit" class="ps-btn ps-btn-sm ps-btn-danger">Supprimer</button>
                             </form>
                             @endif
                         @endif
@@ -181,15 +173,5 @@
     <div style="padding:14px 18px;border-top:1px solid var(--ps-border)">{{ $users->withQueryString()->links() }}</div>
     @endif
 </div>
-
-{{-- Re-open create form if there were validation errors --}}
-@if($errors->any())
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const body = document.querySelector('.ps-panel-body[style*="display:none"]');
-        if (body) body.style.display = 'block';
-    });
-</script>
-@endif
 
 @endsection
