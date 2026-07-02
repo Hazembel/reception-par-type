@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Events\PaymentSucceeded;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Listeners\ActivateSubscription;
 use App\Listeners\RecordAffiliateCommission;
 use App\Listeners\CreateInvoiceOnPayment;
+use App\Models\Setting;
 use App\Models\User;
 use App\Policies\UserManagementPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -31,6 +33,18 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // ── Paramètres SMTP stockés en base — appliqués au démarrage ────────────
+        // Wrappé dans try/catch pour ne pas casser les commandes artisan si la
+        // table settings n'existe pas encore (migrations fraîches, CI, etc.).
+        try {
+            $mail = Setting::group('mail');
+            if (!empty($mail['mail_mailer'])) {
+                AdminSettingsController::applyMailConfig($mail);
+            }
+        } catch (\Throwable) {
+            // Silently ignored: DB may not be available during artisan bootstrap
+        }
+
         // ── Événement central post-paiement PayPal ────────────────────────────
         // L'ordre compte : on active d'abord l'abonnement (CORRECTIF BUG #1),
         // puis on enregistre la commission affilié, puis on génère la facture.

@@ -57,6 +57,8 @@ Route::prefix('admin')
 
         // ── Paramètres (PayPal + Société) ─────────────────────────────────────
         Route::get('/settings',         [AdminSettingsController::class, 'index'])->name('settings.index');
-        Route::post('/settings/paypal', [AdminSettingsController::class, 'updatePaypal'])->name('settings.paypal');
-        Route::post('/settings/company',[AdminSettingsController::class, 'updateCompany'])->name('settings.company');
+        Route::post('/settings/paypal',    [AdminSettingsController::class, 'updatePaypal'])->name('settings.paypal');
+        Route::post('/settings/company',   [AdminSettingsController::class, 'updateCompany'])->name('settings.company');
+        Route::post('/settings/mail',      [AdminSettingsController::class, 'updateMail'])->name('settings.mail');
+        Route::post('/settings/mail/test', [AdminSettingsController::class, 'testMail'])->name('settings.mail.test');
     });
