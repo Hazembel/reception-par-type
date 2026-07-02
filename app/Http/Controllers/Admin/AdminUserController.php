@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 /**
@@ -143,6 +145,86 @@ class AdminUserController extends BaseController
             "Utilisateur : {$user->name} | Admin",
             ''
         );
+    }
+
+    // ── Créer un utilisateur ─────────────────────────────────────────────────
+
+    /**
+     * POST /admin/users
+     * Crée un compte utilisateur directement depuis l'admin (email pré-vérifié).
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $this->authorize('viewAny', User::class);
+
+        $validated = $request->validate([
+            'name'               => ['required', 'string', 'max:255'],
+            'email'              => ['required', 'email:rfc', 'max:255', 'unique:users,email'],
+            'password'           => ['required', Password::min(8)],
+            'subscription_level' => ['required', 'integer', 'min:1', 'max:7'],
+        ]);
+
+        $user = User::create([
+            'name'               => $validated['name'],
+            'email'              => $validated['email'],
+            'password'           => Hash::make($validated['password']),
+            'subscription_level' => (int) $validated['subscription_level'],
+            'email_verified_at'  => now(), // Admin-created accounts are pre-verified
+        ]);
+
+        $this->logAdminAction(auth()->id(), $user->id, 'create_user', [
+            'name'  => $user->name,
+            'email' => $user->email,
+            'level' => $user->subscription_level,
+        ]);
+
+        return redirect()
+            ->route('admin.users.show', $user)
+            ->with('success', "✅ Utilisateur {$user->name} créé avec succès.");
+    }
+
+    // ── Supprimer / Restaurer un utilisateur ─────────────────────────────────
+
+    /**
+     * DELETE /admin/users/{user}
+     * Suppression douce (soft delete) — conforme RGPD.
+     */
+    public function destroy(User $user): RedirectResponse
+    {
+        $this->authorize('grantAccess', $user);
+
+        $name = $user->name;
+        $user->delete();
+
+        $this->logAdminAction(auth()->id(), $user->id, 'delete_user', [
+            'name'  => $name,
+            'email' => $user->email,
+        ]);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', "✅ Compte de {$name} supprimé (soft delete).");
+    }
+
+    /**
+     * POST /admin/users/{user}/restore
+     * Restaure un compte soft-deleted.
+     */
+    public function restore(string $id): RedirectResponse
+    {
+        $this->authorize('viewAny', User::class);
+
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+
+        $this->logAdminAction(auth()->id(), $user->id, 'restore_user', [
+            'name'  => $user->name,
+            'email' => $user->email,
+        ]);
+
+        return redirect()
+            ->route('admin.users.show', $user)
+            ->with('success', "✅ Compte de {$user->name} restauré.");
     }
 
     // ── Modification des droits ───────────────────────────────────────────────

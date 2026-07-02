@@ -33,10 +33,13 @@ Route::prefix('admin')
         Route::delete('/pricing/{plan}',    [AdminPricingController::class, 'destroy'])->name('pricing.destroy');
 
         // ── Utilisateurs (Module 8) ───────────────────────────────────────────
-        Route::get('/users',               [AdminUserController::class, 'index'])->name('users.index');
-        Route::get('/users/admins',        [AdminUserController::class, 'admins'])->name('users.admins');
-        Route::get('/users/{user}',        [AdminUserController::class, 'show'])->name('users.show');
-        Route::post('/users/{user}/grant', [AdminUserController::class, 'grant'])->name('users.grant');
+        Route::get('/users',                 [AdminUserController::class, 'index'])->name('users.index');
+        Route::post('/users',                [AdminUserController::class, 'store'])->name('users.store');
+        Route::get('/users/admins',          [AdminUserController::class, 'admins'])->name('users.admins');
+        Route::get('/users/{user}',          [AdminUserController::class, 'show'])->name('users.show');
+        Route::post('/users/{user}/grant',   [AdminUserController::class, 'grant'])->name('users.grant');
+        Route::delete('/users/{user}',       [AdminUserController::class, 'destroy'])->name('users.destroy');
+        Route::post('/users/{user}/restore', [AdminUserController::class, 'restore'])->name('users.restore');
 
         // ── Imports ASTRA (Module 2) ──────────────────────────────────────────
         Route::prefix('import')->name('import.')->group(function () {

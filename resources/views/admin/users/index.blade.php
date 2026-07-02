@@ -7,6 +7,11 @@
 
 @section('content')
 
+{{-- Flash --}}
+@if(session('success'))
+<div class="ps-alert ps-alert-success" style="margin-bottom:16px">{{ session('success') }}</div>
+@endif
+
 {{-- KPI résumé --}}
 <div class="ps-kpi-row">
     <div class="ps-kpi">
@@ -23,6 +28,55 @@
     </div>
 </div>
 
+{{-- Créer un utilisateur --}}
+@if($level !== '8')
+<div class="ps-panel">
+    <div class="ps-panel-header" style="cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+        <span class="ps-icon">➕</span> Créer un utilisateur
+        <span class="ps-help" style="margin-left:8px">(cliquez pour ouvrir / fermer)</span>
+    </div>
+    <div class="ps-panel-body" style="display:none">
+        @if($errors->any())
+        <div class="ps-alert ps-alert-danger" style="margin-bottom:16px">{{ $errors->first() }}</div>
+        @endif
+        <form method="POST" action="{{ route('admin.users.store') }}">
+            @csrf
+            <div class="ps-grid-2" style="margin-bottom:14px">
+                <div class="ps-form-group">
+                    <label class="ps-label">Nom complet <span style="color:red">*</span></label>
+                    <input type="text" name="name" value="{{ old('name') }}" class="ps-input" placeholder="Jean Dupont" required>
+                </div>
+                <div class="ps-form-group">
+                    <label class="ps-label">Adresse e-mail <span style="color:red">*</span></label>
+                    <input type="email" name="email" value="{{ old('email') }}" class="ps-input" placeholder="jean@exemple.ch" required>
+                </div>
+                <div class="ps-form-group">
+                    <label class="ps-label">Mot de passe <span style="color:red">*</span> <span class="ps-help">(min. 8 caractères)</span></label>
+                    <input type="password" name="password" class="ps-input" placeholder="••••••••" required>
+                </div>
+                <div class="ps-form-group">
+                    <label class="ps-label">Niveau d'abonnement</label>
+                    <select name="subscription_level" class="ps-select">
+                        @foreach($plans as $plan)
+                            @if($plan->level < 8)
+                                <option value="{{ $plan->level }}" {{ old('subscription_level', 1) == $plan->level ? 'selected' : '' }}>
+                                    Niveau {{ $plan->level }} — {{ $plan->name_fr }}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <p class="ps-help" style="margin-bottom:12px">
+                ✅ Le compte sera créé avec l'e-mail <strong>pré-vérifié</strong> (pas d'envoi de mail de confirmation).
+            </p>
+            <button type="submit" class="ps-btn ps-btn-primary">Créer le compte</button>
+        </form>
+    </div>
+</div>
+@endif
+
+{{-- Filtres --}}
 <div class="ps-panel">
     <div class="ps-panel-header"><span class="ps-icon">🔍</span> Filtrer</div>
     <div class="ps-panel-body">
@@ -50,6 +104,7 @@
     </div>
 </div>
 
+{{-- Table --}}
 <div class="ps-panel">
     <div class="ps-panel-header">
         <span class="ps-icon">📋</span> {{ $level === '8' ? 'Liste des administrateurs' : 'Liste des clients' }}
@@ -73,7 +128,7 @@
             </thead>
             <tbody>
                 @forelse($users as $user)
-                <tr>
+                <tr style="{{ $user->deleted_at ? 'opacity:0.55' : '' }}">
                     <td><strong>{{ $user->name }}</strong></td>
                     <td style="color:var(--ps-text-muted)"><code>{{ $user->email }}</code></td>
                     <td>
@@ -91,8 +146,29 @@
                         @endif
                         @if($user->deleted_at)<span class="ps-badge ps-badge-danger">Supprimé</span>@endif
                     </td>
-                    <td style="text-align:right">
-                        <a href="{{ route('admin.users.show', $user) }}" class="ps-btn ps-btn-sm">Modifier</a>
+                    <td style="text-align:right;white-space:nowrap">
+                        @if($user->deleted_at)
+                            {{-- Restore --}}
+                            <form method="POST" action="{{ route('admin.users.restore', $user->id) }}" style="display:inline">
+                                @csrf
+                                <button type="submit" class="ps-btn ps-btn-sm ps-btn-success"
+                                    onclick="return confirm('Restaurer le compte de {{ addslashes($user->name) }} ?')">
+                                    Restaurer
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('admin.users.show', $user) }}" class="ps-btn ps-btn-sm">Modifier</a>
+                            @if($user->id !== auth()->id() && !$user->isAdmin())
+                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" style="display:inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="ps-btn ps-btn-sm ps-btn-danger"
+                                    onclick="return confirm('Supprimer le compte de {{ addslashes($user->name) }} ? (soft delete, récupérable)')">
+                                    Supprimer
+                                </button>
+                            </form>
+                            @endif
+                        @endif
                     </td>
                 </tr>
                 @empty
@@ -105,5 +181,15 @@
     <div style="padding:14px 18px;border-top:1px solid var(--ps-border)">{{ $users->withQueryString()->links() }}</div>
     @endif
 </div>
+
+{{-- Re-open create form if there were validation errors --}}
+@if($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const body = document.querySelector('.ps-panel-body[style*="display:none"]');
+        if (body) body.style.display = 'block';
+    });
+</script>
+@endif
 
 @endsection

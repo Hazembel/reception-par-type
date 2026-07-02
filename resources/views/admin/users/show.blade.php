@@ -130,4 +130,23 @@
     </div>
 </div>
 
+{{-- Zone de danger --}}
+@if($user->id !== auth()->id() && !$user->isAdmin())
+<div class="ps-panel" style="border-color:#e74c3c22">
+    <div class="ps-panel-header" style="color:#c0392b"><span class="ps-icon">🗑️</span> Zone de danger</div>
+    <div class="ps-panel-body" style="display:flex;justify-content:space-between;align-items:center;gap:16px">
+        <div>
+            <strong style="color:#c0392b">Supprimer ce compte</strong>
+            <p class="ps-help" style="margin-top:4px">Soft delete — le compte reste dans la base (récupérable depuis la liste).</p>
+        </div>
+        <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
+              onsubmit="return confirm('Supprimer définitivement le compte de {{ addslashes($user->name) }} ?\n\n(Soft delete — récupérable)')">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="ps-btn ps-btn-danger">Supprimer le compte</button>
+        </form>
+    </div>
+</div>
+@endif
+
 @endsection
