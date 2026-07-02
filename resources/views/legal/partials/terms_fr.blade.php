@@ -72,7 +72,7 @@
 
 <section>
     <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">Protection des données personnelles</h2>
-    <p>Le traitement de vos données personnelles est régi par notre <a href="{{ route(app()->getLocale() . '.legal.privacy') }}" class="text-blue-600 dark:text-blue-400">Politique de confidentialité</a>, incorporée aux présentes CGU par référence.</p>
+    <p>Le traitement de vos données personnelles est régi par notre <a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="text-blue-600 dark:text-blue-400">Politique de confidentialité</a>, incorporée aux présentes CGU par référence.</p>
 </section>
 
 <section>

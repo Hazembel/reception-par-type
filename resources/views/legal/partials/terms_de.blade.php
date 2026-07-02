@@ -72,7 +72,7 @@
 
 <section>
     <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">Datenschutz</h2>
-    <p>Die Verarbeitung Ihrer personenbezogenen Daten wird durch unsere <a href="{{ route(app()->getLocale() . '.legal.privacy') }}" class="text-blue-600 dark:text-blue-400">Datenschutzerklärung</a> geregelt, die durch diesen Verweis Bestandteil dieser ANB ist.</p>
+    <p>Die Verarbeitung Ihrer personenbezogenen Daten wird durch unsere <a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="text-blue-600 dark:text-blue-400">Datenschutzerklärung</a> geregelt, die durch diesen Verweis Bestandteil dieser ANB ist.</p>
 </section>
 
 <section>

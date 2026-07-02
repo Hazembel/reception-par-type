@@ -98,6 +98,10 @@ Route::prefix('{locale}')
         Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
         Route::post('/password/reset',        [ResetPasswordController::class, 'reset'])->name('password.update');
         Route::get('/email/verify', fn () => view('auth.verify-email'))->middleware('auth')->name('verification.notice');
+        Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+            $request->fulfill();
+            return redirect()->route('home', ['locale' => app()->getLocale()])->with('verified', true);
+        })->middleware(['auth', 'signed', 'throttle:6,1'])->name('verification.verify');
         Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
             $request->user()->sendEmailVerificationNotification();
             return back()->with('resent', true);

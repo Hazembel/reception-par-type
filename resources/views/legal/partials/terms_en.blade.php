@@ -72,7 +72,7 @@
 
 <section>
     <h2 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-3">Personal Data</h2>
-    <p>The processing of your personal data is governed by our <a href="{{ route(app()->getLocale() . '.legal.privacy') }}" class="text-blue-600 dark:text-blue-400">Privacy Policy</a>, incorporated into these Terms by reference.</p>
+    <p>The processing of your personal data is governed by our <a href="{{ route('privacy', ['locale' => app()->getLocale()]) }}" class="text-blue-600 dark:text-blue-400">Privacy Policy</a>, incorporated into these Terms by reference.</p>
 </section>
 
 <section>
