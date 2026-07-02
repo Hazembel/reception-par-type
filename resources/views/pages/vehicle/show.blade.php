@@ -81,8 +81,13 @@
         {{-- ── CARTE 1 : Motorisation (toujours visible) ───────────────────── --}}
         <x-vehicle-card title="Motorisation" icon="⚡" :public="true">
             <x-slot name="rows">
+                @php
+                    $energieCode = ($vehicle->energie === 'C' && $vehicle->autonomie_min > 0)
+                        ? 'C-PHEV'
+                        : $vehicle->energie;
+                @endphp
                 <x-data-row label="{{ __('app.vehicle.energie') }}"
-                             :value="$vehicle->energie ? App\Models\VehicleTranslation::translate('energie', $vehicle->energie, app()->getLocale()) : null" />
+                             :value="$vehicle->energie ? App\Models\VehicleTranslation::translate('energie', $energieCode, app()->getLocale()) : null" />
                 <x-data-row label="{{ __('app.vehicle.puissance_kw') }}"
                              :value="$vehicle->puissance_kw ? $vehicle->puissance_kw . ' kW (' . $vehicle->puissance_cv . ' CV)' : null" />
                 <x-data-row label="{{ __('app.vehicle.cylindree') }}"

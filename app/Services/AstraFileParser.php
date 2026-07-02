@@ -405,6 +405,11 @@ class AstraFileParser
         self::castIntegers($mapped);
         self::castDecimals($mapped);
 
+        // ASTRA stores EL_Verbrauch_WLTP in Wh/km; convert to kWh/100km (÷10).
+        if (isset($mapped['consommation_el']) && $mapped['consommation_el'] > 0) {
+            $mapped['consommation_el'] = round((float) $mapped['consommation_el'] / 10, 2);
+        }
+
         // Zero is meaningless for range and WLTP CO2 — treat as absent.
         foreach (['autonomie_min', 'autonomie_max', 'co2_wltp'] as $f) {
             if (isset($mapped[$f]) && $mapped[$f] === 0) {
