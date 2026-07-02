@@ -6,6 +6,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PayPalWebhookController;
 use App\Http\Controllers\Account\AffiliateController;
 use App\Http\Controllers\Account\InvoiceController;
@@ -47,6 +48,18 @@ Route::get('/', function () {
     return redirect()->route('home', ['locale' => $preferred]);
 })->name('root');
 
+// ── Redirections sans locale pour les retours PayPal ─────────────────────────
+// PayPal stocke l'URL configurée telle quelle (ex: https://example.ch/payment/success).
+// Ces routes permettent que ça fonctionne même sans préfixe de locale.
+Route::get('/payment/success', function () {
+    $locale = request()->getPreferredLanguage(['fr', 'de', 'it', 'en']) ?? 'fr';
+    return redirect()->route('payment.success', ['locale' => $locale] + request()->query());
+});
+Route::get('/payment/cancel', function () {
+    $locale = request()->getPreferredLanguage(['fr', 'de', 'it', 'en']) ?? 'fr';
+    return redirect()->route('payment.cancel', ['locale' => $locale]);
+});
+
 // ── Groupe principal avec préfixe locale ─────────────────────────────────────
 Route::prefix('{locale}')
     ->middleware(['web', 'setlocale'])
@@ -76,6 +89,10 @@ Route::prefix('{locale}')
         Route::post('/checkout/create-order', [CheckoutController::class, 'createOrder'])
             ->middleware(['auth', 'throttle:10,1'])
             ->name('checkout.create-order');
+
+        // ── Retour PayPal après paiement ──────────────────────────────────────
+        Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+        Route::get('/payment/cancel',  [PaymentController::class, 'cancel'])->name('payment.cancel');
 
         // ── Espace compte (Module 9) ──────────────────────────────────────────
         Route::middleware(['auth', 'verified'])->prefix('account')->name('account.')->group(function () {
