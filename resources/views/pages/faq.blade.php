@@ -117,7 +117,7 @@
             }"
             class="px-4 py-1.5 rounded-lg text-xs font-medium border transition-all duration-150"
         >
-            Toutes
+            {{ __('app.faq.all') }}
         </button>
 
         @foreach(['general', 'wheels', 'pricing', 'account'] as $cat)
@@ -229,14 +229,14 @@
     {{-- ── CTA Support ──────────────────────────────────────────────────────── --}}
     <div class="mt-12 text-center p-8 rounded-2xl bg-gradient-to-br from-astra/5 to-spark/5 dark:from-astra/10 dark:to-spark/10 border border-astra/10 dark:border-astra/15">
         <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
-            Vous ne trouvez pas votre réponse ?
+            {{ __('app.faq.contact_prompt') }}
         </p>
         <a href="mailto:support@reception-par-type.ch"
            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-astra hover:bg-astra-600 text-white text-sm font-semibold transition-all duration-200 shadow-sm shadow-astra/20">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
-            Contacter le support
+            {{ __('app.faq.contact_btn') }}
         </a>
     </div>
 </div>

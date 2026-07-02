@@ -116,9 +116,31 @@ return [
     'footer' => [
         'desc_line1' => 'Données techniques ASTRA — Homologations suisses.',
         'desc_line2' => 'Non affilié à l\'OFROU/ASTRA.',
-        'legal' => 'Mentions légales',
-        'privacy' => 'Confidentialité',
-        'terms' => 'CGU',
+        'legal'      => 'Mentions légales',
+        'privacy'    => 'Confidentialité',
+        'terms'      => 'CGU',
+        'copyright'  => '© :year reception-par-type.ch — Données ASTRA (OFROU) — Tous droits réservés',
+    ],
+
+    // ── Pages légales ──────────────────────────────────────────────────────
+    'legal' => [
+        'mentions_title' => 'Mentions légales',
+        'privacy_title'  => 'Politique de confidentialité',
+        'terms_title'    => 'Conditions générales d\'utilisation',
+        'last_updated'   => 'Dernière mise à jour :',
+    ],
+
+    // ── Admin / Profil ─────────────────────────────────────────────────────
+    'admin' => [
+        'dashboard'   => 'Tableau de bord',
+        'edit_profile'=> 'Modifier mon profil',
+    ],
+
+    // ── FAQ (CTA) ──────────────────────────────────────────────────────────
+    'faq' => [
+        'all'             => 'Toutes',
+        'contact_prompt'  => 'Vous ne trouvez pas votre réponse ?',
+        'contact_btn'     => 'Contacter le support',
     ],
 
 ];

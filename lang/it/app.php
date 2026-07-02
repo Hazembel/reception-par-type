@@ -112,6 +112,28 @@ return [
         'legal'      => 'Note legali',
         'privacy'    => 'Privacy',
         'terms'      => 'Termini di utilizzo',
+        'copyright'  => '© :year reception-par-type.ch — Dati ASTRA (OFROU) — Tutti i diritti riservati',
+    ],
+
+    // ── Pagine legali ──────────────────────────────────────────────────────
+    'legal' => [
+        'mentions_title' => 'Note legali',
+        'privacy_title'  => 'Informativa sulla privacy',
+        'terms_title'    => 'Condizioni di utilizzo',
+        'last_updated'   => 'Ultimo aggiornamento:',
+    ],
+
+    // ── Admin / Profilo ────────────────────────────────────────────────────
+    'admin' => [
+        'dashboard'    => 'Dashboard',
+        'edit_profile' => 'Modifica il mio profilo',
+    ],
+
+    // ── FAQ (CTA) ──────────────────────────────────────────────────────────
+    'faq' => [
+        'all'            => 'Tutte',
+        'contact_prompt' => 'Non hai trovato la tua risposta?',
+        'contact_btn'    => 'Contatta il supporto',
     ],
 
 ];

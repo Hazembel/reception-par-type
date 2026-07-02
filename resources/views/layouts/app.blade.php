@@ -296,7 +296,7 @@
                                     <svg class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                                     </svg>
-                                    Tableau de bord
+                                    {{ __('app.admin.dashboard') }}
                                 </a>
                                 <a href="{{ route('account.profile.show', ['locale' => app()->getLocale()]) }}"
                                    class="flex items-center gap-2.5 px-4 py-2.5 text-sm
@@ -305,7 +305,7 @@
                                     <svg class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
                                     </svg>
-                                    Modifier mon profil
+                                    {{ __('app.admin.edit_profile') }}
                                 </a>
                             </div>
                         </div>
@@ -375,7 +375,7 @@
                 </div>
             </div>
             <p class="mt-8 text-2xs text-slate-400 dark:text-slate-600">
-                © {{ date('Y') }} reception-par-type.ch — Données ASTRA (OFROU) — Tous droits réservés
+                {{ __('app.footer.copyright', ['year' => date('Y')]) }}
             </p>
         </div>
     </footer>
