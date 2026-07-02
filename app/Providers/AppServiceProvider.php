@@ -9,8 +9,10 @@ use App\Listeners\CreateInvoiceOnPayment;
 use App\Models\User;
 use App\Policies\UserManagementPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -38,6 +40,22 @@ class AppServiceProvider extends ServiceProvider
 
         // ── Policies ──────────────────────────────────────────────────────────
         Gate::policy(User::class, UserManagementPolicy::class);
+
+        // ── Email verification URL — inject {locale} required by our route prefix ─
+        // Laravel's built-in VerifyEmail notification calls route('verification.verify')
+        // without locale, causing UrlGenerationException on every registration.
+        VerifyEmail::createUrlUsing(function (object $notifiable) {
+            $locale = config('app.locale', 'fr');
+            return URL::temporarySignedRoute(
+                'verification.verify',
+                now()->addMinutes(config('auth.verification.expire', 60)),
+                [
+                    'locale' => $locale,
+                    'id'     => $notifiable->getKey(),
+                    'hash'   => sha1($notifiable->getEmailForVerification()),
+                ]
+            );
+        });
 
         // ── Password reset URL — inject {locale} required by our route prefix ─
         // Laravel's built-in ResetPassword notification calls route('password.reset')
