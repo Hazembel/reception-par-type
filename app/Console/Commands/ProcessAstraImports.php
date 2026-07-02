@@ -136,7 +136,7 @@ class ProcessAstraImports extends Command
         $this->line("📄 Voitures : {$filePath} ({$fileSize} Mo)");
         $this->warn('⚠️  Traitement en arrière-plan (peut prendre 1-3h pour 300 Mo)');
 
-        ImportAstraMainJob::dispatch($filePath, $triggeredBy, true, Vehicle::TYPE_CAR)
+        ImportAstraMainJob::dispatch($filePath, $triggeredBy, false, Vehicle::TYPE_CAR)
             ->onQueue('imports-heavy');
 
         $this->info('✅ ImportAstraMainJob (voitures) dispatché en queue imports-heavy.');
@@ -173,7 +173,7 @@ class ProcessAstraImports extends Command
         $this->line("🏍️  Motos : {$filePath} ({$fileSize} Mo)");
 
         // Même job, mais marqué TYPE_MOTORCYCLE → toutes les lignes seront des motos.
-        ImportAstraMainJob::dispatch($filePath, $triggeredBy, true, Vehicle::TYPE_MOTORCYCLE)
+        ImportAstraMainJob::dispatch($filePath, $triggeredBy, false, Vehicle::TYPE_MOTORCYCLE)
             ->onQueue('imports-heavy');
 
         $this->info('✅ ImportAstraMainJob (motos) dispatché en queue imports-heavy.');
