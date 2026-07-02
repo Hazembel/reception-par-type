@@ -134,6 +134,17 @@ class AstraFileParser
         'lochkreis'                  => 'entraxe',
         'nabenbohrung'               => 'alesage',
         'einpresstiefe'              => 'deport_et',
+
+        // ── RT-moto.txt specific (different section numbers than RT-automobil) ──
+        '15 boîte de vitesses 1'     => 'boite_vitesse',
+        '22 construction carburant'  => 'energie',
+        '23 cylindrée'               => 'cylindree',
+        '24 puissance kw'            => 'puissance_kw',
+        '44 poids à vide de'         => 'poids_vide',
+        '45 poids garanti de'        => 'poids_total',
+        '52 pneus et jantes'         => 'pneus_origine',
+        '53 pneus et jantes'         => 'pneus_origine',
+        '54 pneus et jantes'         => 'pneus_origine',
     ];
 
     /**
