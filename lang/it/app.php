@@ -47,6 +47,32 @@ return [
         'alesage'           => 'Centraggio mozzo (mm)',
         'deport_et'         => 'Offset ET (mm)',
         'pneus_origine'     => 'Pneumatici originali',
+
+        // ── Sezioni della scheda tecnica ───────────────────────────────────
+        'section_engine'     => 'Motorizzazione',
+        'section_masses'     => 'Masse & Carichi',
+        'section_emissions'  => 'Emissioni & Consumo',
+        'section_wheels'     => 'Cerchi & Pneumatici',
+
+        // ── Intestazione & stato ──────────────────────────────────────────
+        'reception_badge'    => 'N° Omologazione tipo',
+        'status_active'      => 'Omologazione attiva',
+        'status_archived'    => 'Omologazione archiviata',
+        'updated_at'         => 'Aggiornato',
+        'updated_unknown'    => 'sconosciuta',
+
+        // ── Consumo & autonomia ───────────────────────────────────────────
+        'consumption_mixed'  => 'Consumo NE',
+        'consumption_wltp'   => 'Consumo WLTP',
+        'consumption_el'     => 'Consumo elettrico',
+        'range_electric'     => 'Autonomia elettrica',
+        'energy_label'       => 'Etichetta energetica',
+
+        // ── Condivisione ──────────────────────────────────────────────────
+        'bolts_unit'         => 'fori',
+        'share'              => 'Condividi:',
+        'copy_link'          => 'Copia link',
+        'link_copied'        => 'URL copiato!',
     ],
 
     'errors' => [

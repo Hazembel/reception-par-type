@@ -49,6 +49,32 @@ return [
         'alesage'           => 'Nabenbohrung (mm)',
         'deport_et'         => 'Einpresstiefe ET (mm)',
         'pneus_origine'     => 'Serienreifen',
+
+        // ── Abschnitte der Fahrzeugdaten ───────────────────────────────────
+        'section_engine'     => 'Motorisierung',
+        'section_masses'     => 'Gewichte & Lasten',
+        'section_emissions'  => 'Emissionen & Verbrauch',
+        'section_wheels'     => 'Felgen & Reifen',
+
+        // ── Kopfzeile & Status ────────────────────────────────────────────
+        'reception_badge'    => 'Nr. Typengenehmigung',
+        'status_active'      => 'Typengenehmigung aktiv',
+        'status_archived'    => 'Typengenehmigung archiviert',
+        'updated_at'         => 'Aktualisiert',
+        'updated_unknown'    => 'unbekannt',
+
+        // ── Verbrauch & Reichweite ────────────────────────────────────────
+        'consumption_mixed'  => 'Verbrauch (NEFZ)',
+        'consumption_wltp'   => 'Verbrauch (WLTP)',
+        'consumption_el'     => 'Stromverbrauch',
+        'range_electric'     => 'Elektrische Reichweite',
+        'energy_label'       => 'Energieetikette',
+
+        // ── Teilen ────────────────────────────────────────────────────────
+        'bolts_unit'         => 'Löcher',
+        'share'              => 'Teilen:',
+        'copy_link'          => 'Link kopieren',
+        'link_copied'        => 'URL kopiert!',
     ],
 
     // ── Fehlermeldungen ────────────────────────────────────────────────────

@@ -14,10 +14,10 @@
     {{-- ── Fil d'Ariane ─────────────────────────────────────────────────────── --}}
     <nav class="flex items-center gap-2 text-xs text-slate-400 mb-6" aria-label="Fil d'Ariane">
         <a href="{{ route('home', ['locale' => app()->getLocale()]) }}"
-           class="hover:text-astra transition-colors">Accueil</a>
+           class="hover:text-astra transition-colors">{{ __('app.nav.home') }}</a>
         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <a href="{{ route('search', ['locale' => app()->getLocale()]) }}"
-           class="hover:text-astra transition-colors">Recherche</a>
+           class="hover:text-astra transition-colors">{{ __('app.nav.search') }}</a>
         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <span class="text-slate-600 dark:text-slate-300">{{ $vehicle->marque }} {{ $vehicle->modele }}</span>
     </nav>
@@ -44,7 +44,7 @@
                     text-center
                 ">
                     <div class="text-2xs text-slate-400 uppercase tracking-wider mb-0.5">
-                        N° Réception par type
+                        {{ __('app.vehicle.reception_badge') }}
                     </div>
                     <div class="font-mono text-sm font-semibold text-slate-900 dark:text-white tracking-widest">
                         {{ $vehicle->numero_tg }}
@@ -58,17 +58,17 @@
             @if($vehicle->is_active)
                 <span class="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Homologation active
+                    {{ __('app.vehicle.status_active') }}
                 </span>
             @else
                 <span class="flex items-center gap-1.5 text-xs text-slate-400">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                    Homologation archivée
+                    {{ __('app.vehicle.status_archived') }}
                 </span>
             @endif
             <span class="text-slate-200 dark:text-white/10">|</span>
             <span class="text-xs text-slate-400">
-                Mise à jour {{ $vehicle->imported_at?->diffForHumans() ?? 'inconnue' }}
+                {{ __('app.vehicle.updated_at') }} {{ $vehicle->imported_at?->diffForHumans() ?? __('app.vehicle.updated_unknown') }}
             </span>
         </div>
     </div>
@@ -79,7 +79,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         {{-- ── CARTE 1 : Motorisation (toujours visible) ───────────────────── --}}
-        <x-vehicle-card title="Motorisation" icon="⚡" :public="true">
+        <x-vehicle-card title="{{ __('app.vehicle.section_engine') }}" icon="⚡" :public="true">
             <x-slot name="rows">
                 @php
                     $energieCode = ($vehicle->energie === 'C' && $vehicle->autonomie_min > 0)
@@ -99,7 +99,7 @@
 
         {{-- ── CARTE 2 : Masses (visible niveau 1 partiel → blur si > 1) ────── --}}
         @if($canViewAdvanced)
-            <x-vehicle-card title="Masses & Charges" icon="⚖️" :public="true">
+            <x-vehicle-card title="{{ __('app.vehicle.section_masses') }}" icon="⚖️" :public="true">
                 <x-slot name="rows">
                     <x-data-row label="{{ __('app.vehicle.poids_vide') }}"
                                  :value="$vehicle->poids_vide ? number_format($vehicle->poids_vide, 0, '.', chr(39)) . ' kg' : null" />
@@ -112,7 +112,7 @@
         @else
             {{-- BLOC PAYANT : Glassmorphism blur — les données ne sont PAS dans le DOM --}}
             <x-locked-card
-                title="Masses & Charges"
+                title="{{ __('app.vehicle.section_masses') }}"
                 icon="⚖️"
                 :price="2"
                 :vehicle-id="$vehicle->id"
@@ -120,7 +120,7 @@
         @endif
 
         {{-- ── CARTE 3 : Émissions & Consommation (toujours visible) ────────── --}}
-        <x-vehicle-card title="Émissions & Consommation" icon="🌿" :public="true">
+        <x-vehicle-card title="{{ __('app.vehicle.section_emissions') }}" icon="🌿" :public="true">
             <x-slot name="rows">
                 <x-data-row label="{{ __('app.vehicle.co2') }}"
                              :value="$vehicle->co2 !== null && $vehicle->co2 > 0
@@ -136,15 +136,15 @@
                                      ? (App\Models\VehicleTranslation::translate('code_emissions', $vehicle->code_emissions, app()->getLocale()) ?? $vehicle->code_emissions)
                                      : null)" />
                 @if($vehicle->consommation_mixte)
-                    <x-data-row label="Consommation NE"
+                    <x-data-row label="{{ __('app.vehicle.consumption_mixed') }}"
                                  :value="number_format($vehicle->consommation_mixte, 2, '.', '') . ' l/100km'" />
                 @endif
                 @if($vehicle->consommation_wltp)
-                    <x-data-row label="Consommation WLTP"
+                    <x-data-row label="{{ __('app.vehicle.consumption_wltp') }}"
                                  :value="number_format($vehicle->consommation_wltp, 2, '.', '') . ' l/100km'" />
                 @endif
                 @if($vehicle->consommation_el)
-                    <x-data-row label="Consommation élec."
+                    <x-data-row label="{{ __('app.vehicle.consumption_el') }}"
                                  :value="number_format($vehicle->consommation_el, 2, '.', '') . ' kWh/100km'" />
                 @endif
                 @if($vehicle->autonomie_min || $vehicle->autonomie_max)
@@ -153,11 +153,11 @@
                             ? $vehicle->autonomie_min . ' – ' . $vehicle->autonomie_max . ' km'
                             : ($vehicle->autonomie_max ?? $vehicle->autonomie_min) . ' km';
                     @endphp
-                    <x-data-row label="Autonomie électrique"
+                    <x-data-row label="{{ __('app.vehicle.range_electric') }}"
                                  :value="$autonomie" />
                 @endif
                 @if($vehicle->energie_label)
-                    <x-data-row label="Label énergétique"
+                    <x-data-row label="{{ __('app.vehicle.energy_label') }}"
                                  :value="$vehicle->energie_label" />
                 @endif
             </x-slot>
@@ -165,10 +165,10 @@
 
         {{-- ── CARTE 4 : Jantes & Pneumatiques (bloquée si niveau 1) ─────── --}}
         @if($canViewAdvanced)
-            <x-vehicle-card title="Jantes & Pneumatiques" icon="🔩" :public="true">
+            <x-vehicle-card title="{{ __('app.vehicle.section_wheels') }}" icon="🔩" :public="true">
                 <x-slot name="rows">
                     <x-data-row label="{{ __('app.vehicle.nb_trous') }}"
-                                 :value="$vehicle->nb_trous ? $vehicle->nb_trous . ' trous' : null" />
+                                 :value="$vehicle->nb_trous ? $vehicle->nb_trous . ' ' . __('app.vehicle.bolts_unit') : null" />
                     <x-data-row label="{{ __('app.vehicle.entraxe') }}"
                                  :value="$vehicle->entraxe ? $vehicle->entraxe . ' mm' : null" />
                     <x-data-row label="{{ __('app.vehicle.alesage') }}"
@@ -181,7 +181,7 @@
             </x-vehicle-card>
         @else
             <x-locked-card
-                title="Jantes & Pneumatiques"
+                title="{{ __('app.vehicle.section_wheels') }}"
                 icon="🔩"
                 :price="2"
                 :vehicle-id="$vehicle->id"
@@ -191,9 +191,9 @@
 
     {{-- ── Partager la fiche ────────────────────────────────────────────────── --}}
     <div class="mt-8 flex items-center justify-end gap-3">
-        <span class="text-xs text-slate-400">Partager :</span>
+        <span class="text-xs text-slate-400">{{ __('app.vehicle.share') }}</span>
         <button
-            onclick="navigator.clipboard.writeText(window.location.href).then(() => alert('URL copiée !'))"
+            onclick="navigator.clipboard.writeText(window.location.href).then(() => alert('{{ __('app.vehicle.link_copied') }}'))"
             class="
                 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs
                 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400
@@ -203,7 +203,7 @@
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
             </svg>
-            Copier le lien
+            {{ __('app.vehicle.copy_link') }}
         </button>
     </div>
 </div>

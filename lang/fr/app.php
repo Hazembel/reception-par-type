@@ -49,6 +49,32 @@ return [
         'alesage'           => 'Alésage (mm)',
         'deport_et'         => 'Déport ET (mm)',
         'pneus_origine'     => 'Pneumatiques d\'origine',
+
+        // ── Sections de la fiche technique ────────────────────────────────
+        'section_engine'     => 'Motorisation',
+        'section_masses'     => 'Masses & Charges',
+        'section_emissions'  => 'Émissions & Consommation',
+        'section_wheels'     => 'Jantes & Pneumatiques',
+
+        // ── En-tête & statut ──────────────────────────────────────────────
+        'reception_badge'    => 'N° Réception par type',
+        'status_active'      => 'Homologation active',
+        'status_archived'    => 'Homologation archivée',
+        'updated_at'         => 'Mise à jour',
+        'updated_unknown'    => 'inconnue',
+
+        // ── Consommation & autonomie ───────────────────────────────────────
+        'consumption_mixed'  => 'Consommation NE',
+        'consumption_wltp'   => 'Consommation WLTP',
+        'consumption_el'     => 'Consommation élec.',
+        'range_electric'     => 'Autonomie électrique',
+        'energy_label'       => 'Label énergétique',
+
+        // ── Partage ───────────────────────────────────────────────────────
+        'bolts_unit'         => 'trous',
+        'share'              => 'Partager :',
+        'copy_link'          => 'Copier le lien',
+        'link_copied'        => 'URL copiée !',
     ],
 
     // ── Messages d'erreur ──────────────────────────────────────────────────

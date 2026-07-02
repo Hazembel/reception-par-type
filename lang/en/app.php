@@ -47,6 +47,32 @@ return [
         'alesage'           => 'Hub Bore (mm)',
         'deport_et'         => 'Offset ET (mm)',
         'pneus_origine'     => 'OEM Tyres',
+
+        // ── Vehicle sheet sections ─────────────────────────────────────────
+        'section_engine'     => 'Engine',
+        'section_masses'     => 'Weights & Loads',
+        'section_emissions'  => 'Emissions & Consumption',
+        'section_wheels'     => 'Wheels & Tyres',
+
+        // ── Header & status ───────────────────────────────────────────────
+        'reception_badge'    => 'Type Approval No.',
+        'status_active'      => 'Active type approval',
+        'status_archived'    => 'Archived type approval',
+        'updated_at'         => 'Updated',
+        'updated_unknown'    => 'unknown',
+
+        // ── Consumption & range ───────────────────────────────────────────
+        'consumption_mixed'  => 'Fuel consumption (NEDC)',
+        'consumption_wltp'   => 'Fuel consumption (WLTP)',
+        'consumption_el'     => 'Electric consumption',
+        'range_electric'     => 'Electric range',
+        'energy_label'       => 'Energy label',
+
+        // ── Share ─────────────────────────────────────────────────────────
+        'bolts_unit'         => 'bolts',
+        'share'              => 'Share:',
+        'copy_link'          => 'Copy link',
+        'link_copied'        => 'URL copied!',
     ],
 
     'errors' => [
